@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ service.title }}{% endblock %}
+
+{% block main %}
+<!-- Хлебные крошки -->
+<div class="container py-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('price') }}">Услуги</a></li>
+            <li class="breadcrumb-item active">{{ service.title }}</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- Основная информация -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Изображение -->
+            <div class="col-lg-6">
+                <img src="{{ url_for('static', filename=service.image_url) }}" 
+                     alt="{{ service.title }}" 
+                     class="img-fluid rounded">
+            </div>
+            
+            <!-- Детали -->
+            <div class="col-lg-6 mt-4 mt-lg-0">
+                <h1 class="mb-3">{{ service.title }}</h1>
+                
+                <div class="price-display mb-4">
+                    <span class="h2">{{ service.price_from }}</span>
+                    {% if service.price_period %}
+                    <span class="text-muted ms-2">/ {{ service.price_period }}</span>
+                    {% endif %}
+                </div>
+                
+                {% if service.description %}
+                <p class="lead mb-4">{{ service.description }}</p>
+                {% endif %}
+                
+                <!-- Что входит -->
+                {% if service.features and service.features != 'None' %}
+                <div class="mb-4">
+                    <h5>Что входит:</h5>
+                    <ul class="list-unstyled">
+                        {% for feature in service.features.split(';') %}
+                        <li class="mb-2">
+                            {% if 'cross:' in feature %}
+                            <i class="bi bi-x-circle text-muted me-2"></i>
+                            <span class="text-muted">{{ feature|replace('cross:', '') }}</span>
+                            {% else %}
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            {{ feature }}
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+                <!-- Кнопки -->
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('index') }}#contact" class="btn btn-primary-custom btn-lg flex-grow-1">
+                        Заказать
+                    </a>
+                    <a href="{{ url_for('price') }}" class="btn btn-outline-secondary btn-lg">
+                        Назад
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Дополнительная информация -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h3 class="text-center mb-5">Дополнительная информация</h3>
+        
+        <div class="row">
+            <div class="col-md-4 text-center mb-4">
+                <div class="p-4">
+                    <i class="bi bi-clock display-6 text-primary mb-3"></i>
+                    <h5>Сроки</h5>
+                    <p>От 1 до 5 рабочих дней в зависимости от сложности</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 text-center mb-4">
+                <div class="p-4">
+                    <i class="bi bi-check-circle display-6 text-primary mb-3"></i>
+                    <h5>Гарантия</h5>
+                    <p>100% гарантия качества. Если не понравится - вернем деньги</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 text-center mb-4">
+                <div class="p-4">
+                    <i class="bi bi-headset display-6 text-primary mb-3"></i>
+                    <h5>Поддержка</h5>
+                    <p>Консультация перед заказом и помощь после выполнения</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Призыв к действию -->
+<section class="py-5 bg-price text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Готовы заказать?</h2>
+        <p class="lead mb-4">Оставьте заявку и мы свяжемся с вами в течение 15 минут</p>
+        <a href="{{ url_for('index') }}#contact" class="btn btn-light btn-lg px-5">
+            Оставить заявку
+        </a>
+    </div>
+</section>
+{% endblock %}

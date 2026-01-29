@@ -1,0 +1,453 @@
+{% extends 'base.html' %}
+
+{% block title %}Цены{% endblock %}
+
+{% block main %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col text-center">
+        <h1 class="section-title d-inline-block">Наши цены</h1>
+        <p class="lead">Прозрачное ценообразование без скрытых платежей</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Панель фильтров и быстрые ссылки (без изменения цветов) -->
+<section class="py-3 bg-white border-bottom">
+  <div class="container">
+    <div class="row align-items-center">
+      <!-- Быстрые якоря -->
+      <div class="col-md-6 mb-3 mb-md-0">
+        <div class="d-flex flex-wrap gap-2">
+          <a href="#printing" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-printer me-1"></i> Печать
+          </a>
+          <a href="#photo-sessions" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-camera me-1"></i> Фотосессии
+          </a>
+          <a href="#special-offers" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-star me-1"></i> Спецпредложения
+          </a>
+          {% if current_category == 'all' %}
+          <a href="#all-services" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-grid me-1"></i> Все услуги
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      
+      <!-- Фильтры и сортировка -->
+      <div class="col-md-6">
+        <div class="d-flex gap-2 justify-content-md-end">
+          <!-- Фильтр по категориям -->
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <i class="bi bi-funnel me-1"></i>
+              {% if current_category == 'all' %}Все категории
+              {% elif current_category == 'printing' %}Печать
+              {% elif current_category == 'photo_session' %}Фотосессии
+              {% elif current_category == 'special_offers' %}Спецпредложения
+              {% else %}Фильтр
+              {% endif %}
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('price', category='all', sort=current_sort) }}">Все категории</a></li>
+              <li><hr class="dropdown-divider"></li>
+              {% for cat in categories %}
+                <li><a class="dropdown-item" href="{{ url_for('price', category=cat, sort=current_sort) }}">
+                  {% if cat == 'printing' %}Услуги печати
+                  {% elif cat == 'photo_session' %}Фотосессии
+                  {% elif cat == 'special_offers' %}Специальные предложения
+                  {% else %}{{ cat }}
+                  {% endif %}
+                </a></li>
+              {% endfor %}
+            </ul>
+          </div>
+          
+          <!-- Сортировка -->
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <i class="bi bi-sort-down me-1"></i>
+              {% if current_sort == 'default' %}По умолчанию
+              {% elif current_sort == 'price_asc' %}Цена ↑
+              {% elif current_sort == 'price_desc' %}Цена ↓
+              {% elif current_sort == 'title' %}По названию
+              {% elif current_sort == 'popular' %}Популярные
+              {% else %}Сортировка
+              {% endif %}
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('price', category=current_category, sort='default') }}">По умолчанию</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('price', category=current_category, sort='price_asc') }}">Цена по возрастанию</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('price', category=current_category, sort='price_desc') }}">Цена по убыванию</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('price', category=current_category, sort='title') }}">По названию (А-Я)</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('price', category=current_category, sort='popular') }}">Популярные</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Все услуги в одном списке -->
+{% if current_category == 'all' %}
+<section id="all-services" class="py-5">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col">
+        <h2 class="section-title">Все услуги</h2>
+        <p class="text-muted">Найдено {{ services|length }} услуг</p>
+      </div>
+    </div>
+    
+    <div class="row g-4">
+      {% for service in services %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card price-card h-100 position-relative">
+          {% if service.is_popular %}
+          <span class="badge bg-warning position-absolute" style="top: 10px; right: 10px; z-index: 1;">
+            <i class="bi bi-star-fill me-1"></i> Популярное
+          </span>
+          {% endif %}
+          
+          <div class="price-image">
+            <img
+              src="{{ url_for('static', filename=service.image_url) }}"
+              class="card-img-top"
+              alt="{{ service.title }}"
+              style="height: 200px; object-fit: cover;"
+            />
+          </div>
+          
+          <div class="price-header">
+            <span class="badge bg-secondary mb-2">
+              {% if service.category == 'printing' %}Печать
+              {% elif service.category == 'photo_session' %}Фотосессия
+              {% elif service.category == 'special_offers' %}Спецпредложение
+              {% endif %}
+            </span>
+            <h5 class="mb-0">{{ service.title }}</h5>
+            <div class="price-amount mt-2">{{ service.price_from }}</div>
+            {% if service.price_period %}
+            <div class="price-period">{{ service.price_period }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="price-features">
+            {% if service.features and service.features != 'None' %}
+            <ul class="mb-3">
+              {% for feature in service.features.split(';')[:3] %}
+                <li class="small"><i class="bi bi-check-circle-fill text-success me-1"></i> {{ feature }}</li>
+              {% endfor %}
+              {% if service.features.split(';')|length > 3 %}
+                <li class="small text-muted"><i class="bi bi-three-dots me-1"></i> и ещё {{ service.features.split(';')|length - 3 }} пунктов</li>
+              {% endif %}
+            </ul>
+            {% endif %}
+            
+            <div class="text-center mt-auto">
+              <a
+                href="{{ url_for('service_detail', service_id=service.id) }}"
+                class="btn btn-primary-custom w-100 btn-sm"
+              >{{ service.order_button_text or 'Заказать' }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Услуги печати -->
+<section id="printing" class="py-5 {% if current_category != 'all' %}border-top{% endif %}">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col text-center">
+        <h2 class="section-title d-inline-block">Услуги печати</h2>
+        <p class="text-muted">
+          Качественная печать на профессиональном оборудовании
+        </p>
+      </div>
+    </div>
+
+    {% if printing_services %}
+    <div class="row g-4">
+      {% for service in printing_services %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card price-card h-100 position-relative">
+          {% if service.is_popular %}
+          <span class="badge bg-warning position-absolute" style="top: 10px; right: 10px; z-index: 1;">
+            <i class="bi bi-star-fill"></i> Популярное
+          </span>
+          {% endif %}
+          
+          <div class="price-image">
+            <img
+              src="{{ url_for('static', filename=service.image_url) }}"
+              class="card-img-top"
+              alt="{{ service.title }}"
+            />
+          </div>
+          <div class="price-header">
+            <h3>{{ service.title }}</h3>
+            <div class="price-amount">{{ service.price_from }}</div>
+            {% if service.price_period %}
+            <div class="price-period">{{ service.price_period }}</div>
+            {% endif %}
+          </div>
+          <div class="price-features">
+            {% if service.features %}
+            <ul>
+              {% for feature in service.features.split(';') %}
+                <li><i class="bi bi-check-circle-fill"></i> {{ feature }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+            <div class="text-center mt-4">
+              <a
+                href="{{ url_for('service_detail', service_id=service.id) }}"
+                class="btn btn-primary-custom w-100"
+                >{{ service.order_button_text or 'Заказать' }}</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+      <i class="bi bi-printer display-1 text-muted"></i>
+      <h4 class="mt-3">Услуги печати не найдены</h4>
+      <p class="text-muted">Попробуйте изменить параметры фильтрации</p>
+      <a href="{{ url_for('price', category='all') }}" class="btn btn-primary-custom">
+        <i class="bi bi-arrow-left me-1"></i> Показать все услуги
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Пакеты фотосессий -->
+<section id="photo-sessions" class="py-5 bg-light">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col text-center">
+        <h2 class="section-title d-inline-block">
+          Индивидуальные пакеты фотосессий
+        </h2>
+        <p class="text-muted">Выберите подходящий ваш необходимый вариант</p>
+      </div>
+    </div>
+
+    {% if photo_session_packages %}
+    <div class="row g-4">
+      {% for package in photo_session_packages %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card price-card h-100 position-relative">
+          {% if package.is_popular %}
+          <span class="badge bg-warning position-absolute" style="top: 10px; right: 10px; z-index: 1;">
+            <i class="bi bi-star-fill"></i> Популярное
+          </span>
+          {% endif %}
+          
+          <div class="price-image">
+            <img
+              src="{{ url_for('static', filename=package.image_url) }}"
+              class="card-img-top"
+              alt="{{ package.title }}"
+            />
+          </div>
+          <div class="price-header">
+            <h3>{{ package.title }}</h3>
+            <div class="price-amount">{{ package.price_from }}</div>
+            {% if package.price_period %}
+            <div class="price-period">{{ package.price_period }}</div>
+            {% endif %}
+          </div>
+          <div class="price-features">
+            {% if package.features %}
+            <ul>
+              {% for feature in package.features.split(';') %}
+                {% if 'cross:' in feature %}
+                  <li><i class="bi bi-x-circle text-muted"></i> {{ feature|replace('cross:', '') }}</li>
+                {% else %}
+                  <li><i class="bi bi-check-circle-fill"></i> {{ feature }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+            {% endif %}
+            <div class="text-center mt-4">
+              <a
+                href="{{ url_for('service_detail', service_id=package.id) }}"
+                class="btn btn-primary-custom w-100"
+                >{{ package.order_button_text or 'Заказать' }}</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+      <i class="bi bi-camera display-1 text-muted"></i>
+      <h4 class="mt-3">Пакеты фотосессий не найдены</h4>
+      <p class="text-muted">Попробуйте изменить параметры фильтрации</p>
+      <a href="{{ url_for('price', category='all') }}" class="btn btn-primary-custom">
+        <i class="bi bi-arrow-left me-1"></i> Показать все услуги
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Специальные предложения -->
+<section id="special-offers" class="py-5">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col text-center">
+        <h2 class="section-title d-inline-block">Специальные предложения</h2>
+        <p class="text-muted">Выгодные условия для особых случаев</p>
+      </div>
+    </div>
+
+    {% if special_offers %}
+    <div class="row g-4">
+      {% for offer in special_offers %}
+      <div class="col-md-4">
+        <div class="card border-warning h-100 position-relative">
+          {% if offer.is_popular %}
+          <span class="badge bg-danger position-absolute" style="top: 10px; right: 10px; z-index: 1;">
+            <i class="bi bi-fire"></i> Горячее предложение
+          </span>
+          {% endif %}
+          
+          <div class="price-image">
+            <img
+              src="{{ url_for('static', filename=offer.image_url) }}"
+              class="img-fluid w-100"
+              alt="{{ offer.title }}"
+              style="height: 200px; object-fit: cover;"
+            />
+          </div>
+          <div class="card-body text-center p-4">
+            <h3 class="card-title">{{ offer.title }}</h3>
+            {% if offer.description %}
+            <p class="card-text">{{ offer.description }}</p>
+            {% endif %}
+            <div class="price-amount text-warning">{{ offer.price_from }}</div>
+            <a
+              href="{{ url_for('service_detail', service_id=offer.id) }}"
+              class="btn btn-primary-custom mt-3"
+              >{{ offer.order_button_text or 'Подробнее' }}</a
+            >
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+      <i class="bi bi-gift display-1 text-muted"></i>
+      <h4 class="mt-3">Специальные предложения не найдены</h4>
+      <p class="text-muted">Попробуйте изменить параметры фильтрации</p>
+      <a href="{{ url_for('price', category='all') }}" class="btn btn-primary-custom">
+        <i class="bi bi-arrow-left me-1"></i> Показать все услуги
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Призыв к действию -->
+<section class="py-5 bg-price text-white">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <h2 class="mb-3">Нужна помощь с выбором?</h2>
+        <p class="mb-0">
+          Не можете определиться? Наши консультанты помогут выбрать оптимальный пакет услуг
+          и рассчитают индивидуальную скидку для вашего заказа.
+        </p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <a href="{{ url_for('index') }}#contact" class="btn btn-light btn-lg">
+          <i class="bi bi-chat-dots"></i> Получить консультацию
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JavaScript для плавной прокрутки -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Плавная прокрутка к якорям
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      
+      // Пропускаем ссылки на другие страницы и контакт
+      if (href === '#' || href.includes('contact')) return;
+      
+      e.preventDefault();
+      const targetElement = document.querySelector(href);
+      if (targetElement) {
+        // Прокручиваем с учетом фиксированной панели фильтров
+        const offset = 80;
+        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
+        
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+        
+        // Добавляем хэш в URL без перезагрузки
+        history.pushState(null, null, href);
+      }
+    });
+  });
+  
+  // Обновление активной кнопки при прокрутке
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('a[href^="#"]');
+  
+  function updateActiveLink() {
+    let current = '';
+    const scrollPosition = window.scrollY + 100;
+    
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.clientHeight;
+      
+      if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+        current = section.getAttribute('id');
+      }
+    });
+    
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (href === `#${current}`) {
+        link.classList.add('active');
+        link.classList.remove('btn-outline-secondary');
+        link.classList.add('btn-primary-custom');
+      } else if (href.startsWith('#')) {
+        link.classList.remove('active');
+        link.classList.remove('btn-primary-custom');
+        link.classList.add('btn-outline-secondary');
+      }
+    });
+  }
+  
+  window.addEventListener('scroll', updateActiveLink);
+  updateActiveLink(); // Инициализация при загрузке
+});
+</script>
+{% endblock %}

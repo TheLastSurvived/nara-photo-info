@@ -1,0 +1,126 @@
+{% extends 'base.html' %} 
+{% block title %} Все работы{% endblock %} 
+{% block main %}
+
+    <section id="portfolio" class="py-5 bg-light">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col text-center">
+            <h2 class="section-title d-inline-block">Наши работы</h2>
+          </div>
+        </div>
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4">
+            <div class="portfolio-item">
+              <img
+                src="{{ url_for('static', filename='images/services/postery.jpg') }}"
+                class="img-fluid w-100"
+                alt="Печать постеров"
+              />
+              <div class="portfolio-overlay">
+                <h5 class="text-white">Постеры и увеличения</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="portfolio-item">
+              <img
+                src="{{ url_for('static', filename='images/services/fotoknigi.jpg') }}"
+                class="img-fluid w-100"
+                alt="Фотокниги"
+              />
+              <div class="portfolio-overlay">
+                <h5 class="text-white">Фотокниги</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="portfolio-item">
+              <img
+                src="{{ url_for('static', filename='images/services/suveniry.jpg') }}"
+                class="img-fluid w-100"
+                alt="Фотосувениры"
+              />
+              <div class="portfolio-overlay">
+                <h5 class="text-white">Фотосувениры</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="portfolio-item">
+              <img
+                src="{{ url_for('static', filename='images/services/portret.jpg') }}"
+                class="img-fluid w-100"
+                alt="Портретная фотосессия"
+              />
+              <div class="portfolio-overlay">
+                <h5 class="text-white">Портретная съемка</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="portfolio-item">
+              <img
+                src="{{ url_for('static', filename='images/services/svadba.jpg') }}"
+                class="img-fluid w-100"
+                alt="Свадебная фотосессия"
+              />
+              <div class="portfolio-overlay">
+                <h5 class="text-white">Свадебная съемка</h5>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4">
+            <div class="portfolio-item">
+              <img
+                src="{{ url_for('static', filename='images/services/kids.jpg') }}"
+                class="img-fluid w-100"
+                alt="Семейная фотосессия"
+              />
+              <div class="portfolio-overlay">
+                <h5 class="text-white">Детская фотосъемка</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="portfolio-item">
+              <img
+                src="{{ url_for('static', filename='images/services/predmet.jpg') }}"
+                class="img-fluid w-100"
+                alt="Детская фотосессия"
+              />
+              <div class="portfolio-overlay">
+                <h5 class="text-white">Предметная съемка</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="portfolio-item">
+              <img
+               src="{{ url_for('static', filename='images/services/korparat.jpg') }}"
+                class="img-fluid w-100"
+                alt="Ивент фотосессия"
+              />
+              <div class="portfolio-overlay">
+                <h5 class="text-white">Корпоративная съемка</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="portfolio-item">
+              <img
+                src="{{ url_for('static', filename='images/services/retush.jpg') }}"
+                class="img-fluid w-100"
+                alt="Фэшн фотосессия"
+              />
+              <div class="portfolio-overlay">
+                <h5 class="text-white">Ретушь и обработка</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock %} 
+

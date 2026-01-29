@@ -1,0 +1,605 @@
+:root {
+  --primary-color: #d4af37;
+  --secondary-color: #8b7355;
+  --dark-color: #333333;
+  --light-color: #f8f9fa;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--dark-color);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  color: var(--primary-color) !important;
+  font-size: 1.8rem;
+}
+
+.nav-link {
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: var(--primary-color) !important;
+}
+
+.hero-section {
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url("/static/images/index.jpg");
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 150px 0;
+}
+
+.section-title {
+  position: relative;
+  margin-bottom: 3rem;
+  font-weight: 700;
+}
+
+.section-title:after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-color: var(--primary-color);
+}
+
+.service-card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: none;
+  overflow: hidden;
+}
+
+.service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.service-icon {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.about-icon{
+  color: var(--primary-color);
+}
+
+.portfolio-item {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 30px;
+  border-radius: 8px;
+}
+
+.portfolio-item img {
+  transition: transform 0.5s;
+}
+
+.portfolio-item:hover img {
+  transform: scale(1.1);
+}
+
+.portfolio-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(212, 175, 55, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.portfolio-item:hover .portfolio-overlay {
+  opacity: 1;
+}
+
+.btn-primary-custom {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  font-weight: 500;
+  padding: 10px 25px;
+}
+
+.btn-primary-custom:hover {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.testimonial-card {
+  border-left: 4px solid var(--primary-color);
+  padding-left: 20px;
+}
+
+.footer {
+  background-color: var(--dark-color);
+  color: white;
+  padding: 60px 0 30px;
+}
+
+.footer h5 {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+
+.footer a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer a:hover {
+  color: var(--primary-color);
+}
+
+.social-icons a {
+  display: inline-block;
+  margin-right: 15px;
+  font-size: 1.2rem;
+}
+
+.copyright {
+  border-top: 1px solid #444;
+  padding-top: 20px;
+  margin-top: 40px;
+  text-align: center;
+  color: #aaa;
+}
+
+.contact-info i {
+  color: var(--primary-color);
+  margin-right: 10px;
+}
+
+.icon-custom {
+  filter: brightness(0) saturate(100%) invert(72%) sepia(65%) saturate(365%)
+    hue-rotate(3deg) brightness(92%) contrast(87%);
+}
+
+.price-card {
+  border: none;
+  border-radius: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+}
+
+.price-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.price-header {
+  background-color: #d4af37;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.price-amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 15px 0;
+}
+
+.price-period {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.price-features {
+  padding: 25px;
+}
+
+.price-features ul {
+  list-style: none;
+  padding: 0;
+}
+
+.price-features li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.price-features li:last-child {
+  border-bottom: none;
+}
+
+.price-features i {
+  color: #d4af37;
+  margin-right: 10px;
+}
+
+.popular-badge {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background-color: #e74c3c;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.additional-service {
+  border-left: 4px solid #d4af37;
+  padding-left: 15px;
+  margin-bottom: 20px;
+}
+
+.faq-item {
+  margin-bottom: 20px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.faq-question {
+  background-color: #f9f9f9;
+  padding: 15px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq-answer {
+  padding: 20px;
+  display: none;
+}
+
+.bg-price {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.values-card {
+  text-align: center;
+  padding: 30px 20px;
+  border-radius: 10px;
+  transition: transform 0.3s;
+  height: 100%;
+}
+
+.values-card:hover {
+  transform: translateY(-5px);
+}
+
+.values-icon {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 30px 20px;
+  border-radius: 10px;
+  transition: transform 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-10px);
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+
+/* Упрощенные стили для страниц авторизации */
+.auth-section {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  padding: 60px 0;
+}
+
+.auth-card {
+  border: 1px solid #e1e5e9;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+  background-color: #f8f9fa;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid #e1e5e9;
+}
+
+.auth-body {
+  padding: 30px;
+}
+
+.auth-title {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.auth-subtitle {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  border-radius: 5px;
+}
+
+.btn-auth {
+  background-color: #d4af37;
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+.btn-auth:hover {
+  background-color: #8b7355;
+  color: white;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e1e5e9;
+}
+
+.auth-footer a {
+  color: #d4af37;
+  text-decoration: none;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+
+/* Стиль для кнопки телефона */
+.btn-phone {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 12px 25px;
+  border-radius: 50px;
+  box-shadow: 0 4px 15px #d4af37;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-phone:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px #d4af37;
+  color: white;
+}
+
+.btn-phone:active {
+  transform: translateY(0);
+}
+
+.btn-phone::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-phone:hover::before {
+  left: 100%;
+}
+
+.btn-phone .bi-telephone {
+  font-size: 1.1em;
+  margin-right: 8px;
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+  .btn-phone {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Стили для красивых стрелок слайдера */
+.custom-carousel-prev,
+.custom-carousel-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    opacity: 0;
+    z-index: 10;
+}
+
+.custom-carousel-prev {
+    left: -25px;
+}
+
+.custom-carousel-next {
+    right: -25px;
+}
+
+.carousel:hover .custom-carousel-prev,
+.carousel:hover .custom-carousel-next {
+    opacity: 1;
+}
+
+.custom-carousel-prev:hover,
+.custom-carousel-next:hover {
+    background-color: white;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-50%) scale(1.05);
+}
+
+.custom-carousel-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.custom-carousel-prev .custom-carousel-icon {
+    margin-left: -2px;
+}
+
+.custom-carousel-next .custom-carousel-icon {
+    margin-right: -2px;
+}
+
+/* Индикаторы */
+.carousel-indicators {
+    position: relative;
+    margin-top: 2.5rem;
+    margin-bottom: 0;
+}
+
+.carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 6px;
+    background-color: #ddd;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.carousel-indicators button.active {
+    background-color: #d4af37;
+    transform: scale(1.2);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .custom-carousel-prev,
+    .custom-carousel-next {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .custom-carousel-prev {
+        left: 10px;
+    }
+    
+    .custom-carousel-next {
+        right: 10px;
+    }
+    
+    .carousel:hover .custom-carousel-prev,
+    .carousel:hover .custom-carousel-next {
+        opacity: 0.8;
+    }
+}
+
+/* Альтернативный вариант стрелок с градиентом */
+.custom-carousel-prev.gradient,
+.custom-carousel-next.gradient {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+}
+
+.custom-carousel-prev.gradient .custom-carousel-icon,
+.custom-carousel-next.gradient .custom-carousel-icon {
+    color: white;
+}
+
+.custom-carousel-prev.gradient:hover,
+.custom-carousel-next.gradient:hover {
+    background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+}
+
+
+/* Стили для каталога */
+.service-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.service-image-container {
+    height: 200px;
+    overflow: hidden;
+}
+
+.service-image {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover .service-image {
+    transform: scale(1.05);
+}
+
+/* Стили для скидки */
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #dc3545;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+/* Стили для карточки заказа */
+.order-card {
+    border-left: 4px solid #0d6efd;
+}
+
+.order-card.completed {
+    border-left-color: #198754;
+}
+
+.order-card.cancelled {
+    border-left-color: #dc3545;
+}
+
+.order-card.pending {
+    border-left-color: #ffc107;
+}
+
+/* Стили для рейтинга */
+.rating-stars {
+    color: #ffc107;
+    font-size: 1.2rem;
+}
