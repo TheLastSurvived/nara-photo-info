@@ -122,24 +122,48 @@
       </div>
     </nav>
 
-    {% with messages = get_flashed_messages(with_categories=true) %} {% if
-    messages %} {% for category, message in messages %}
-    <div
-      class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show"
-      role="alert"
-    >
-      {% if category == 'success' %}
-      <i class="bi bi-check-circle-fill me-2"></i>
-      {% elif category == 'error' or category == 'danger' %}
-      <i class="bi bi-exclamation-triangle-fill me-2"></i>
-      {% elif category == 'warning' %}
-      <i class="bi bi-exclamation-circle-fill me-2"></i>
-      {% elif category == 'info' %}
-      <i class="bi bi-info-circle-fill me-2"></i>
-      {% endif %} {{ message }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  {% block main %}{% endblock %}
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+              <div class="toast-header 
+                {% if category == 'success' %}bg-success text-white
+                {% elif category == 'error' or category == 'danger' %}bg-danger text-white
+                {% elif category == 'warning' %}bg-warning text-dark
+                {% elif category == 'info' %}bg-info text-white
+                {% else %}bg-primary text-white{% endif %}">
+                {% if category == 'success' %}
+                <i class="bi bi-check-circle-fill me-2"></i>
+                {% elif category == 'error' or category == 'danger' %}
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                {% elif category == 'warning' %}
+                <i class="bi bi-exclamation-circle-fill me-2"></i>
+                {% elif category == 'info' %}
+                <i class="bi bi-info-circle-fill me-2"></i>
+                {% else %}
+                <i class="bi bi-bell-fill me-2"></i>
+                {% endif %}
+                <strong class="me-auto">
+                  {% if category == 'success' %}Успех
+                  {% elif category == 'error' or category == 'danger' %}Ошибка
+                  {% elif category == 'warning' %}Внимание
+                  {% elif category == 'info' %}Информация
+                  {% else %}Уведомление{% endif %}
+                </strong>
+                <small>Только что</small>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+              <div class="toast-body">
+                {{ message }}
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
     </div>
-    {% endfor %} {% endif %} {% endwith %} {% block main %}{% endblock %}
 
     <footer class="footer">
       <div class="container">

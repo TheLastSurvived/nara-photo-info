@@ -1,611 +1,644 @@
-{% extends 'base.html' %}
-{% block title %}
-Фотосалон "НАРА"
-{% endblock %}
+{% extends 'base.html' %} {% block title %} Фотосалон "НАРА" {% endblock %} {%
+block main %}
 
-{% block main %}
-
-    <section class="hero-section text-center">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-lg-8">
-            <h1 class="display-4 fw-bold mb-4">
-              Профессиональная печать и фотоуслуги в студии "НАРА"
-            </h1>
-            <p class="lead mb-5">
-              Качественная печать фотографий любой сложности и профессиональная
-              фотосъемка
-            </p>
-            <a href="#contact" class="btn btn-primary-custom btn-lg me-3"
-              >Записаться</a
-            >
-            <a href="#portfolio" class="btn btn-outline-light btn-lg"
-              >Наши работы</a
-            >
-          </div>
-        </div>
+<section class="hero-section text-center">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <h1 class="display-4 fw-bold mb-4">
+          Профессиональная печать и фотоуслуги в студии "НАРА"
+        </h1>
+        <p class="lead mb-5">
+          Качественная печать фотографий любой сложности и профессиональная
+          фотосъемка
+        </p>
+        <a href="#contact" class="btn btn-primary-custom btn-lg me-3"
+          >Записаться</a
+        >
+        <a href="#portfolio" class="btn btn-outline-light btn-lg"
+          >Наши работы</a
+        >
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <section id="services" class="py-5">
-      <div class="container">
-        <!-- Слайдер услуг печати -->
-        <div class="row mb-5">
-          <div class="col text-center">
-            <h2 class="section-title d-inline-block">Услуги печати</h2>
-          </div>
-        </div>
-
-        <div id="printingCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
-          <div class="carousel-inner">
-            <!-- Слайд 1 -->
-            <div class="carousel-item active">
-              <div class="row g-4">
-                <div class="col-md-6 col-lg-4">
-                  <div class="card service-card h-100 text-center p-4">
-                    <img
-                      src="{{ url_for('static', filename='images/services/usluga1.jpg') }}"
-                      class="card-img-top"
-                      alt="Обработка и ретушь"
-                    />
-                    <div class="service-icon">
-                      <i class="bi bi-printer"></i>
-                    </div>
-                    <h4>Печать фотографий</h4>
-                    <p class="text-muted">
-                      Качественная печать фото на профессиональном оборудовании
-                    </p>
-                  </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                  <div class="card service-card h-100 text-center p-4">
-                    <div class="service-icon">
-                      <img
-                      src="{{ url_for('static', filename='images/services/usluga2.jpg') }}"
-                      class="card-img-top"
-                      alt="Обработка и ретушь"
-                    />
-                      <i class="bi bi-image"></i>
-                    </div>
-                    <h4>Увеличение и постеры</h4>
-                    <p class="text-muted">
-                      Печать больших форматов, постеров и фотографий для интерьера
-                    </p>
-                  </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                  <div class="card service-card h-100 text-center p-4">
-                    <img
-                      src="{{ url_for('static', filename='images/services/usluga3.jpg') }}"
-                      class="card-img-top"
-                      alt="Обработка и ретушь"
-                    />
-                    <div class="service-icon">
-                      <i class="bi bi-journal-album"></i>
-                    </div>
-                    <h4>Фотокниги и альбомы</h4>
-                    <p class="text-muted">
-                      Создание качественных фотокниг и альбомов на заказ
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Слайд 2 -->
-            <div class="carousel-item">
-              <div class="row g-4">
-                <div class="col-md-6 col-lg-4">
-                  <div class="card service-card h-100 text-center p-4">
-                    <img
-                      src="{{ url_for('static', filename='images/services/usluga4.jpg') }}"
-                      class="card-img-top"
-                      alt="Обработка и ретушь"
-                    />
-                    <div class="service-icon">
-                      <i class="bi bi-crop"></i>
-                    </div>
-                    <h4>Обработка и ретушь</h4>
-                    <p class="text-muted">
-                      Профессиональная обработка и подготовка фото к печати
-                    </p>
-                  </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                  <div class="card service-card h-100 text-center p-4">
-                    <img
-                      src="{{ url_for('static', filename='images/services/usluga5.jpg') }}"
-                      class="card-img-top"
-                      alt="Обработка и ретушь"
-                    />
-                    <div class="service-icon">
-                      <i class="bi bi-gift"></i>
-                    </div>
-                    <h4>Фотосувениры</h4>
-                    <p class="text-muted">
-                      Печать на кружках, футболках, пазлах и других сувенирах
-                    </p>
-                  </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                  <div class="card service-card h-100 text-center p-4">
-                    <img
-                      src="{{ url_for('static', filename='images/services/usluga6.jpg') }}"
-                      class="card-img-top"
-                      alt="Обработка и ретушь"
-                    />
-                    <div class="service-icon">
-                      <i class="bi bi-camera"></i>
-                    </div>
-                    <h4>Срочная печать</h4>
-                    <p class="text-muted">
-                      Срочная печать фото за 1 час, восстановление старых снимков
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Красивые кнопки навигации -->
-          <button class="carousel-control-prev custom-carousel-prev" type="button" data-bs-target="#printingCarousel" data-bs-slide="prev">
-            <span class="custom-carousel-icon">
-              <i class="bi bi-chevron-left"></i>
-            </span>
-            <span class="visually-hidden">Предыдущий</span>
-          </button>
-          <button class="carousel-control-next custom-carousel-next" type="button" data-bs-target="#printingCarousel" data-bs-slide="next">
-            <span class="custom-carousel-icon">
-              <i class="bi bi-chevron-right"></i>
-            </span>
-            <span class="visually-hidden">Следующий</span>
-          </button>
-          
-          <!-- Индикаторы -->
-          <div class="carousel-indicators mt-4">
-            <button type="button" data-bs-target="#printingCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Слайд 1"></button>
-            <button type="button" data-bs-target="#printingCarousel" data-bs-slide-to="1" aria-label="Слайд 2"></button>
-          </div>
-        </div>
-
-        <!-- Слайдер услуг съемки -->
-        <div class="row mb-5">
-          <div class="col text-center">
-            <h2 class="section-title d-inline-block">Услуги съемки</h2>
-          </div>
-        </div>
-
-        <div id="shootingCarousel" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-inner">
-            <!-- Слайд 1 -->
-            <div class="carousel-item active">
-              <div class="row g-4">
-                <div class="col-md-6 col-lg-4">
-                  <div class="card service-card h-100 text-center p-4">
-                    <div class="service-icon">
-                      <i class="bi bi-person-hearts"></i>
-                    </div>
-                    <h4>Портретная съемка</h4>
-                    <p class="text-muted">
-                      Индивидуальные и семейные портреты, создание профессионального
-                      имиджа
-                    </p>
-                  </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                  <div class="card service-card h-100 text-center p-4">
-                    <div class="service-icon">
-                      <i class="bi bi-heart"></i>
-                    </div>
-                    <h4>Свадебная фотосъемка</h4>
-                    <p class="text-muted">
-                      Запечатлим самый важный день в вашей жизни с любовью и вниманием
-                      к деталям
-                    </p>
-                  </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                  <div class="card service-card h-100 text-center p-4">
-                    <div class="service-icon">
-                      <i class="bi bi-emoji-smile"></i>
-                    </div>
-                    <h4>Детская фотосъемка</h4>
-                    <p class="text-muted">
-                      Яркие и естественные фотографии ваших детей в комфортной
-                      атмосфере
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Слайд 2 -->
-            <div class="carousel-item">
-              <div class="row g-4">
-                <div class="col-md-6 col-lg-4">
-                  <div class="card service-card h-100 text-center p-4">
-                    <div class="service-icon">
-                      <i class="bi bi-bag-check"></i>
-                    </div>
-                    <h4>Предметная съемка</h4>
-                    <p class="text-muted">
-                      Профессиональные фотографии товаров для каталогов и
-                      интернет-магазинов
-                    </p>
-                  </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                  <div class="card service-card h-100 text-center p-4">
-                    <div class="service-icon">
-                      <i class="bi bi-building"></i>
-                    </div>
-                    <h4>Корпоративная съемка</h4>
-                    <p class="text-muted">
-                      Фото для бизнеса: портреты сотрудников, репортажи с мероприятий
-                    </p>
-                  </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                  <div class="card service-card h-100 text-center p-4">
-                    <div class="service-icon">
-                      <i class="bi bi-palette2"></i>
-                    </div>
-                    <h4>Ретушь и обработка</h4>
-                    <p class="text-muted">
-                      Профессиональная обработка фотографий, создание коллажей и
-                      фотокниг
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Красивые кнопки навигации -->
-          <button class="carousel-control-prev custom-carousel-prev" type="button" data-bs-target="#shootingCarousel" data-bs-slide="prev">
-            <span class="custom-carousel-icon">
-              <i class="bi bi-chevron-left"></i>
-            </span>
-            <span class="visually-hidden">Предыдущий</span>
-          </button>
-          <button class="carousel-control-next custom-carousel-next" type="button" data-bs-target="#shootingCarousel" data-bs-slide="next">
-            <span class="custom-carousel-icon">
-              <i class="bi bi-chevron-right"></i>
-            </span>
-            <span class="visually-hidden">Следующий</span>
-          </button>
-          
-          <!-- Индикаторы -->
-          <div class="carousel-indicators mt-4">
-            <button type="button" data-bs-target="#shootingCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Слайд 1"></button>
-            <button type="button" data-bs-target="#shootingCarousel" data-bs-slide-to="1" aria-label="Слайд 2"></button>
-          </div>
-        </div>
-
-        <!-- Блок индивидуальной съемки -->
-        <div class="row mb-5 mt-5">
-          <div class="col text-center">
-            <h4 class="section-title d-inline-block">
-              Также мы предлагаем услуги индивидуальной съемки
-            </h4>
-          </div>
-        </div>
+<section id="services" class="py-5">
+  <div class="container">
+    <!-- Слайдер услуг печати -->
+    <div class="row mb-5">
+      <div class="col text-center">
+        <h2 class="section-title d-inline-block">Услуги печати</h2>
       </div>
-    </section>
+    </div>
 
-    <section id="portfolio" class="py-5 bg-light">
-      <div class="container">
-        <div class="row mb-5">
-          <div class="col text-center">
-            <h2 class="section-title d-inline-block">Наши работы</h2>
-            <p class="text-muted">
-              Примеры фотосессий, выполненных в нашей студии
-            </p>
-          </div>
-        </div>
-        <div class="row g-4">
-          <div class="col-md-6 col-lg-4">
-            <div class="portfolio-item">
-              <img
-                src="{{ url_for('static', filename='images/services/postery.jpg') }}"
-                class="img-fluid w-100"
-                alt="Печать постеров"
-              />
-              <div class="portfolio-overlay">
-                <h5 class="text-white">Постеры и увеличения</h5>
+    <div
+      id="printingCarousel"
+      class="carousel slide mb-5"
+      data-bs-ride="carousel"
+    >
+      <div class="carousel-inner">
+        <!-- Слайд 1 -->
+        <div class="carousel-item active">
+          <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+              <div class="card service-card h-100 text-center p-4">
+                <img
+                  src="{{ url_for('static', filename='images/services/usluga1.jpg') }}"
+                  class="card-img-top"
+                  alt="Обработка и ретушь"
+                />
+                <div class="service-icon">
+                  <i class="bi bi-printer"></i>
+                </div>
+                <h4>Печать фотографий</h4>
+                <p class="text-muted">
+                  Качественная печать фото на профессиональном оборудовании
+                </p>
               </div>
             </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="portfolio-item">
-              <img
-                src="{{ url_for('static', filename='images/services/fotoknigi.jpg') }}"
-                class="img-fluid w-100"
-                alt="Фотокниги"
-              />
-              <div class="portfolio-overlay">
-                <h5 class="text-white">Фотокниги</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="portfolio-item">
-              <img
-                src="{{ url_for('static', filename='images/services/suveniry.jpg') }}"
-                class="img-fluid w-100"
-                alt="Фотосувениры"
-              />
-              <div class="portfolio-overlay">
-                <h5 class="text-white">Фотосувениры</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="portfolio-item">
-              <img
-                src="{{ url_for('static', filename='images/services/portret.jpg') }}"
-                class="img-fluid w-100"
-                alt="Портретная фотосессия"
-              />
-              <div class="portfolio-overlay">
-                <h5 class="text-white">Портретная съемка</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="portfolio-item">
-              <img
-                src="{{ url_for('static', filename='images/services/svadba.jpg') }}"
-                class="img-fluid w-100"
-                alt="Свадебная фотосессия"
-              />
-              <div class="portfolio-overlay">
-                <h5 class="text-white">Свадебная съемка</h5>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6 col-lg-4">
-            <div class="portfolio-item">
-              <img
-                src="{{ url_for('static', filename='images/services/kids.jpg') }}"
-                class="img-fluid w-100"
-                alt="Семейная фотосессия"
-              />
-              <div class="portfolio-overlay">
-                <h5 class="text-white">Детская фотосъемка</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="portfolio-item">
-              <img
-                src="{{ url_for('static', filename='images/services/predmet.jpg') }}"
-                class="img-fluid w-100"
-                alt="Детская фотосессия"
-              />
-              <div class="portfolio-overlay">
-                <h5 class="text-white">Предметная съемка</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="portfolio-item">
-              <img
-                src="{{ url_for('static', filename='images/services/korparat.jpg') }}"
-                class="img-fluid w-100"
-                alt="Ивент фотосессия"
-              />
-              <div class="portfolio-overlay">
-                <h5 class="text-white">Корпоративная съемка</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="portfolio-item">
-              <img
-                src="{{ url_for('static', filename='images/services/retush.jpg') }}"
-                class="img-fluid w-100"
-                alt="Фэшн фотосессия"
-              />
-              <div class="portfolio-overlay">
-                <h5 class="text-white">Ретушь и обработка</h5>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row mt-5">
-          <div class="col text-center">
-            <a href="{{ url_for('portfolio') }}" class="btn btn-primary-custom"
-              >Смотреть все работы</a
-            >
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="py-5 bg-light">
-      <div class="container">
-        <div class="row mb-5">
-          <div class="col text-center">
-            <h2 class="section-title d-inline-block">Отзывы клиентов</h2>
-            <p class="text-muted">Что говорят о нас наши клиенты</p>
-          </div>
-        </div>
-        <div class="row g-4">
-          <div class="col-md-6 col-lg-4">
-            <div class="testimonial-card bg-white p-4 h-100">
-              <div class="d-flex align-items-center mb-3">
-                <div class="flex-shrink-0">
+            <div class="col-md-6 col-lg-4">
+              <div class="card service-card h-100 text-center p-4">
+                <div class="service-icon">
                   <img
-                    src="{{ url_for('static', filename='images/rev1.jpg') }}"
-                    class="rounded-circle"
-                    width="60"
-                    alt="Анна"
+                    src="{{ url_for('static', filename='images/services/usluga2.jpg') }}"
+                    class="card-img-top"
+                    alt="Обработка и ретушь"
                   />
+                  <i class="bi bi-image"></i>
                 </div>
-                <div class="flex-grow-1 ms-3">
-                  <h5 class="mb-0">Анна</h5>
-                  <small>Печать фотокниги</small>
-                </div>
+                <h4>Увеличение и постеры</h4>
+                <p class="text-muted">
+                  Печать больших форматов, постеров и фотографий для интерьера
+                </p>
               </div>
-              <p class="mb-0">
-                "Заказывала фотокнигу для родителей на юбилей - качество печати
-                превзошло все ожидания! Очень детальная проработка и быстрые
-                сроки."
-              </p>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="card service-card h-100 text-center p-4">
+                <img
+                  src="{{ url_for('static', filename='images/services/usluga3.jpg') }}"
+                  class="card-img-top"
+                  alt="Обработка и ретушь"
+                />
+                <div class="service-icon">
+                  <i class="bi bi-journal-album"></i>
+                </div>
+                <h4>Фотокниги и альбомы</h4>
+                <p class="text-muted">
+                  Создание качественных фотокниг и альбомов на заказ
+                </p>
+              </div>
             </div>
           </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="testimonial-card bg-white p-4 h-100">
-              <div class="d-flex align-items-center mb-3">
-                <div class="flex-shrink-0">
-                  <img
-                    src="{{ url_for('static', filename='images/rev2.jpg') }}"
-                    class="rounded-circle"
-                    width="60"
-                    alt="Дмитрий"
-                  />
+        </div>
+        <!-- Слайд 2 -->
+        <div class="carousel-item">
+          <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+              <div class="card service-card h-100 text-center p-4">
+                <img
+                  src="{{ url_for('static', filename='images/services/usluga4.jpg') }}"
+                  class="card-img-top"
+                  alt="Обработка и ретушь"
+                />
+                <div class="service-icon">
+                  <i class="bi bi-crop"></i>
                 </div>
-                <div class="flex-grow-1 ms-3">
-                  <h5 class="mb-0">Дмитрий</h5>
-                  <small>Корпоративная съемка</small>
-                </div>
+                <h4>Обработка и ретушь</h4>
+                <p class="text-muted">
+                  Профессиональная обработка и подготовка фото к печати
+                </p>
               </div>
-              <p class="mb-0">
-                "Заказывали корпоративную фотосессию для нашего коллектива.
-                Фотографии получились живыми и естественными, все сотрудники
-                довольны!"
-              </p>
             </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="testimonial-card bg-white p-4 h-100">
-              <div class="d-flex align-items-center mb-3">
-                <div class="flex-shrink-0">
-                  <img
-                    src="{{ url_for('static', filename='images/rev3.jpg') }}"
-                    class="rounded-circle"
-                    width="60"
-                    alt="Ольга"
-                  />
+            <div class="col-md-6 col-lg-4">
+              <div class="card service-card h-100 text-center p-4">
+                <img
+                  src="{{ url_for('static', filename='images/services/usluga5.jpg') }}"
+                  class="card-img-top"
+                  alt="Обработка и ретушь"
+                />
+                <div class="service-icon">
+                  <i class="bi bi-gift"></i>
                 </div>
-                <div class="flex-grow-1 ms-3">
-                  <h5 class="mb-0">Ольга</h5>
-                  <small>Детская фотосъемка</small>
-                </div>
+                <h4>Фотосувениры</h4>
+                <p class="text-muted">
+                  Печать на кружках, футболках, пазлах и других сувенирах
+                </p>
               </div>
-              <p class="mb-0">
-                "Очень довольны фотосессией! Фотограф нашел подход к детям,
-                съемка прошла весело и непринужденно. Обязательно вернемся!"
-              </p>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="card service-card h-100 text-center p-4">
+                <img
+                  src="{{ url_for('static', filename='images/services/usluga6.jpg') }}"
+                  class="card-img-top"
+                  alt="Обработка и ретушь"
+                />
+                <div class="service-icon">
+                  <i class="bi bi-camera"></i>
+                </div>
+                <h4>Срочная печать</h4>
+                <p class="text-muted">
+                  Срочная печать фото за 1 час, восстановление старых снимков
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
 
-    <section id="contact" class="py-5">
-      <div class="container">
-        <div class="row mb-5">
-          <div class="col text-center">
-            <h2 class="section-title d-inline-block">Контакты</h2>
-            <p class="text-muted">Свяжитесь с нами для записи на фотосессию</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-6 mb-4 mb-lg-0">
-            <div class="contact-info">
-              <div class="d-flex mb-4">
-                <i class="bi bi-geo-alt fs-4"></i>
-                <div class="ms-3">
-                  <h5>Адрес</h5>
-                  <p>г. Гродно, ул. Горького, д. 84</p>
+      <!-- Красивые кнопки навигации -->
+      <button
+        class="carousel-control-prev custom-carousel-prev"
+        type="button"
+        data-bs-target="#printingCarousel"
+        data-bs-slide="prev"
+      >
+        <span class="custom-carousel-icon">
+          <i class="bi bi-chevron-left"></i>
+        </span>
+        <span class="visually-hidden">Предыдущий</span>
+      </button>
+      <button
+        class="carousel-control-next custom-carousel-next"
+        type="button"
+        data-bs-target="#printingCarousel"
+        data-bs-slide="next"
+      >
+        <span class="custom-carousel-icon">
+          <i class="bi bi-chevron-right"></i>
+        </span>
+        <span class="visually-hidden">Следующий</span>
+      </button>
+
+      <!-- Индикаторы -->
+      <div class="carousel-indicators mt-4">
+        <button
+          type="button"
+          data-bs-target="#printingCarousel"
+          data-bs-slide-to="0"
+          class="active"
+          aria-current="true"
+          aria-label="Слайд 1"
+        ></button>
+        <button
+          type="button"
+          data-bs-target="#printingCarousel"
+          data-bs-slide-to="1"
+          aria-label="Слайд 2"
+        ></button>
+      </div>
+    </div>
+
+    <!-- Слайдер услуг съемки -->
+    <div class="row mb-5">
+      <div class="col text-center">
+        <h2 class="section-title d-inline-block">Услуги съемки</h2>
+      </div>
+    </div>
+
+    <div id="shootingCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <!-- Слайд 1 -->
+        <div class="carousel-item active">
+          <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+              <div class="card service-card h-100 text-center p-4">
+                <div class="service-icon">
+                  <i class="bi bi-person-hearts"></i>
                 </div>
+                <h4>Портретная съемка</h4>
+                <p class="text-muted">
+                  Индивидуальные и семейные портреты, создание профессионального
+                  имиджа
+                </p>
               </div>
-              <div class="d-flex mb-4">
-                <i class="bi bi-telephone fs-4"></i>
-                <div class="ms-3">
-                  <h5>Телефон</h5>
-                  <p>+375 (29) 123-45-67</p>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="card service-card h-100 text-center p-4">
+                <div class="service-icon">
+                  <i class="bi bi-heart"></i>
                 </div>
+                <h4>Свадебная фотосъемка</h4>
+                <p class="text-muted">
+                  Запечатлим самый важный день в вашей жизни с любовью и
+                  вниманием к деталям
+                </p>
               </div>
-              <div class="d-flex mb-4">
-                <i class="bi bi-envelope fs-4"></i>
-                <div class="ms-3">
-                  <h5>Email</h5>
-                  <p>info@nara-photo.ru</p>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="card service-card h-100 text-center p-4">
+                <div class="service-icon">
+                  <i class="bi bi-emoji-smile"></i>
                 </div>
-              </div>
-              <div class="d-flex mb-4">
-                <i class="bi bi-clock fs-4"></i>
-                <div class="ms-3">
-                  <h5>Режим работы</h5>
-                  <p>Пн-Пт: 9:00 - 21:00<br />Сб-Вс: 10:00 - 20:00</p>
-                </div>
+                <h4>Детская фотосъемка</h4>
+                <p class="text-muted">
+                  Яркие и естественные фотографии ваших детей в комфортной
+                  атмосфере
+                </p>
               </div>
             </div>
           </div>
-          <div class="col-lg-6">
-            <form>
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Ваше имя"
-                    required
-                  />
+        </div>
+        <!-- Слайд 2 -->
+        <div class="carousel-item">
+          <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+              <div class="card service-card h-100 text-center p-4">
+                <div class="service-icon">
+                  <i class="bi bi-bag-check"></i>
                 </div>
-                <div class="col-md-6">
-                  <input
-                    type="tel"
-                    class="form-control"
-                    placeholder="Телефон"
-                    required
-                  />
-                </div>
-                <div class="col-12">
-                  <input
-                    type="email"
-                    class="form-control"
-                    placeholder="Email"
-                    required
-                  />
-                </div>
-                <div class="col-12">
-                  <select class="form-select" required>
-                    <option value="" selected disabled>Выберите услугу</option>
-                    <option value="retush">Печать фотографий</option>
-                    <option value="retush">Увеличение и постеры</option>
-                    <option value="retush">Фотокниги и альбомы</option>
-                    <option value="retush">Фотосувениры</option>
-                    <option value="retush">Срочная печать</option>
-                    <option value="individual">Индивидуальная съемка</option>
-                    <option value="portrait">Портретная съемка</option>
-                    <option value="wedding">Свадебная съемка</option>
-                    <option value="children">Детская съемка</option>
-                    <option value="family">Предметная съемка</option>
-                    <option value="corporate">Корпоративная съемка</option>
-                    <option value="retush">Ретушь и обработка</option>
-                    <option value="other">Другое</option>
-                  </select>
-                </div>
-                <div class="col-12">
-                  <textarea
-                    class="form-control"
-                    rows="4"
-                    placeholder="Сообщение"
-                  ></textarea>
-                </div>
-                <div class="col-12">
-                  <button type="submit" class="btn btn-primary-custom w-100">
-                    Отправить заявку
-                  </button>
-                </div>
+                <h4>Предметная съемка</h4>
+                <p class="text-muted">
+                  Профессиональные фотографии товаров для каталогов и
+                  интернет-магазинов
+                </p>
               </div>
-            </form>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="card service-card h-100 text-center p-4">
+                <div class="service-icon">
+                  <i class="bi bi-building"></i>
+                </div>
+                <h4>Корпоративная съемка</h4>
+                <p class="text-muted">
+                  Фото для бизнеса: портреты сотрудников, репортажи с
+                  мероприятий
+                </p>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="card service-card h-100 text-center p-4">
+                <div class="service-icon">
+                  <i class="bi bi-palette2"></i>
+                </div>
+                <h4>Ретушь и обработка</h4>
+                <p class="text-muted">
+                  Профессиональная обработка фотографий, создание коллажей и
+                  фотокниг
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+
+      <!-- Красивые кнопки навигации -->
+      <button
+        class="carousel-control-prev custom-carousel-prev"
+        type="button"
+        data-bs-target="#shootingCarousel"
+        data-bs-slide="prev"
+      >
+        <span class="custom-carousel-icon">
+          <i class="bi bi-chevron-left"></i>
+        </span>
+        <span class="visually-hidden">Предыдущий</span>
+      </button>
+      <button
+        class="carousel-control-next custom-carousel-next"
+        type="button"
+        data-bs-target="#shootingCarousel"
+        data-bs-slide="next"
+      >
+        <span class="custom-carousel-icon">
+          <i class="bi bi-chevron-right"></i>
+        </span>
+        <span class="visually-hidden">Следующий</span>
+      </button>
+
+      <!-- Индикаторы -->
+      <div class="carousel-indicators mt-4">
+        <button
+          type="button"
+          data-bs-target="#shootingCarousel"
+          data-bs-slide-to="0"
+          class="active"
+          aria-current="true"
+          aria-label="Слайд 1"
+        ></button>
+        <button
+          type="button"
+          data-bs-target="#shootingCarousel"
+          data-bs-slide-to="1"
+          aria-label="Слайд 2"
+        ></button>
+      </div>
+    </div>
+
+    <!-- Блок индивидуальной съемки -->
+    <div class="row mb-5 mt-5">
+      <div class="col text-center">
+        <h4 class="section-title d-inline-block">
+          Также мы предлагаем услуги индивидуальной съемки
+        </h4>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="portfolio" class="py-5 bg-light">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col text-center">
+        <h2 class="section-title d-inline-block">Наши работы</h2>
+        <p class="text-muted">Примеры фотосессий, выполненных в нашей студии</p>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="portfolio-item">
+          <img
+            src="{{ url_for('static', filename='images/services/postery.jpg') }}"
+            class="img-fluid w-100"
+            alt="Печать постеров"
+          />
+          <div class="portfolio-overlay">
+            <h5 class="text-white">Постеры и увеличения</h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="portfolio-item">
+          <img
+            src="{{ url_for('static', filename='images/services/fotoknigi.jpg') }}"
+            class="img-fluid w-100"
+            alt="Фотокниги"
+          />
+          <div class="portfolio-overlay">
+            <h5 class="text-white">Фотокниги</h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="portfolio-item">
+          <img
+            src="{{ url_for('static', filename='images/services/suveniry.jpg') }}"
+            class="img-fluid w-100"
+            alt="Фотосувениры"
+          />
+          <div class="portfolio-overlay">
+            <h5 class="text-white">Фотосувениры</h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="portfolio-item">
+          <img
+            src="{{ url_for('static', filename='images/services/portret.jpg') }}"
+            class="img-fluid w-100"
+            alt="Портретная фотосессия"
+          />
+          <div class="portfolio-overlay">
+            <h5 class="text-white">Портретная съемка</h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="portfolio-item">
+          <img
+            src="{{ url_for('static', filename='images/services/svadba.jpg') }}"
+            class="img-fluid w-100"
+            alt="Свадебная фотосессия"
+          />
+          <div class="portfolio-overlay">
+            <h5 class="text-white">Свадебная съемка</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="portfolio-item">
+          <img
+            src="{{ url_for('static', filename='images/services/kids.jpg') }}"
+            class="img-fluid w-100"
+            alt="Семейная фотосессия"
+          />
+          <div class="portfolio-overlay">
+            <h5 class="text-white">Детская фотосъемка</h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="portfolio-item">
+          <img
+            src="{{ url_for('static', filename='images/services/predmet.jpg') }}"
+            class="img-fluid w-100"
+            alt="Детская фотосессия"
+          />
+          <div class="portfolio-overlay">
+            <h5 class="text-white">Предметная съемка</h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="portfolio-item">
+          <img
+            src="{{ url_for('static', filename='images/services/korparat.jpg') }}"
+            class="img-fluid w-100"
+            alt="Ивент фотосессия"
+          />
+          <div class="portfolio-overlay">
+            <h5 class="text-white">Корпоративная съемка</h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="portfolio-item">
+          <img
+            src="{{ url_for('static', filename='images/services/retush.jpg') }}"
+            class="img-fluid w-100"
+            alt="Фэшн фотосессия"
+          />
+          <div class="portfolio-overlay">
+            <h5 class="text-white">Ретушь и обработка</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col text-center">
+        <a href="{{ url_for('portfolio') }}" class="btn btn-primary-custom"
+          >Смотреть все работы</a
+        >
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col text-center">
+        <h2 class="section-title d-inline-block">Отзывы клиентов</h2>
+        <p class="text-muted">Что говорят о нас наши клиенты</p>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="testimonial-card bg-white p-4 h-100">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0">
+              <img
+                src="{{ url_for('static', filename='images/rev1.jpg') }}"
+                class="rounded-circle"
+                width="60"
+                alt="Анна"
+              />
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="mb-0">Анна</h5>
+              <small>Печать фотокниги</small>
+            </div>
+          </div>
+          <p class="mb-0">
+            "Заказывала фотокнигу для родителей на юбилей - качество печати
+            превзошло все ожидания! Очень детальная проработка и быстрые сроки."
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="testimonial-card bg-white p-4 h-100">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0">
+              <img
+                src="{{ url_for('static', filename='images/rev2.jpg') }}"
+                class="rounded-circle"
+                width="60"
+                alt="Дмитрий"
+              />
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="mb-0">Дмитрий</h5>
+              <small>Корпоративная съемка</small>
+            </div>
+          </div>
+          <p class="mb-0">
+            "Заказывали корпоративную фотосессию для нашего коллектива.
+            Фотографии получились живыми и естественными, все сотрудники
+            довольны!"
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="testimonial-card bg-white p-4 h-100">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0">
+              <img
+                src="{{ url_for('static', filename='images/rev3.jpg') }}"
+                class="rounded-circle"
+                width="60"
+                alt="Ольга"
+              />
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="mb-0">Ольга</h5>
+              <small>Детская фотосъемка</small>
+            </div>
+          </div>
+          <p class="mb-0">
+            "Очень довольны фотосессией! Фотограф нашел подход к детям, съемка
+            прошла весело и непринужденно. Обязательно вернемся!"
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="py-5">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col text-center">
+        <h2 class="section-title d-inline-block">Контакты</h2>
+        <p class="text-muted">Свяжизь с нами</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="contact-info">
+          <div class="d-flex mb-4">
+            <i class="bi bi-geo-alt fs-4"></i>
+            <div class="ms-3">
+              <h5>Адрес</h5>
+              <p>г. Гродно, ул. Горького, д. 84</p>
+            </div>
+          </div>
+          <div class="d-flex mb-4">
+            <i class="bi bi-telephone fs-4"></i>
+            <div class="ms-3">
+              <h5>Телефон</h5>
+              <p>+375 (29) 123-45-67</p>
+            </div>
+          </div>
+          <div class="d-flex mb-4">
+            <i class="bi bi-envelope fs-4"></i>
+            <div class="ms-3">
+              <h5>Email</h5>
+              <p>info@nara-photo.ru</p>
+            </div>
+          </div>
+          <div class="d-flex mb-4">
+            <i class="bi bi-clock fs-4"></i>
+            <div class="ms-3">
+              <h5>Режим работы</h5>
+              <p>Пн-Пт: 9:00 - 21:00<br />Сб-Вс: 10:00 - 20:00</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <form method="post">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Ваше имя"
+                required
+                name="name"
+              />
+            </div>
+            <div class="col-md-6">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Ваша фамилия"
+                required
+                name="surname"
+              />
+            </div>
+            <div class="col-md-12">
+              <input
+                type="email"
+                class="form-control"
+                placeholder="Ваш email"
+                required
+                name="email"
+                {% if current_user.is_authenticated %}
+                value="{{ current_user.email }}"
+                readonly
+                {% endif %}
+              />
+            </div>
+
+            <div class="col-12">
+              <textarea
+                class="form-control"
+                rows="6"
+                placeholder="Сообщение"
+                name="message"
+              ></textarea>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary-custom w-100">
+                Отправить сообщение
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
 
 {% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ error_title }}{% endblock %}
+
+{% block main %}
+<div class="error-page py-5">
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-75">
+            <div class="col-lg-8 col-xl-6">
+                <div class="error-card card shadow-lg border-0">
+                    <div class="card-body text-center p-4 p-md-5">
+                        {% block error_content %}{% endblock %}
+                        
+                        <div class="error-actions mt-5 pt-4 border-top">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <a href="{{ url_for('index') }}" class="btn btn-primary-custom w-100">
+                                        <i class="bi bi-house-door me-2"></i>Главная
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="{{ url_for('price') }}" class="btn btn-outline-secondary w-100">
+                                        <i class="bi bi-tags me-2"></i>Услуги
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <button onclick="window.history.back()" class="btn btn-outline-secondary w-100">
+                                        <i class="bi bi-arrow-left me-2"></i>Назад
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-muted small">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Если ошибка повторяется, свяжитесь с нами: 
+                                <a href="mailto:info@nara-photo.ru" class="text-decoration-none">info@nara-photo.ru</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

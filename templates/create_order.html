@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block main %}
+<section class="py-5">
+    <div class="container">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('price') }}">Услуги</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('service_detail', service_id=service.id) }}">{{ service.title }}</a></li>
+                <li class="breadcrumb-item active">Оформление заказа</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h4 class="card-title mb-0">
+                            <i class="bi bi-bag-check me-2"></i>Оформление заказа
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <!-- Информация об услуге -->
+                            <div class="mb-4 p-3 border rounded">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <img src="{{ url_for('static', filename=service.image_url) }}" 
+                                             alt="{{ service.title }}" 
+                                             class="img-fluid rounded">
+                                    </div>
+                                    <div class="col-md-9">
+                                        <h5>{{ service.title }}</h5>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="h4 me-2">{{ service.price_from }}</span>
+                                            {% if service.price_period %}
+                                            <span class="text-muted">/ {{ service.price_period }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <p class="text-muted small mb-0">{{ service.description[:100] }}...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ваша скидка -->
+                            <div class="mb-4 p-3 border rounded bg-light">
+                                <h6><i class="bi bi-percent me-2 text-success"></i>Ваша скидка</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <small class="text-muted">Ваш уровень:</small>
+                                        <div class="d-flex align-items-center">
+                                            {% if current_user.loyalty_level == 'gold' %}
+                                            <i class="bi bi-trophy-fill text-warning me-2"></i>
+                                            <span class="fw-bold">GOLD</span>
+                                            {% elif current_user.loyalty_level == 'silver' %}
+                                            <i class="bi bi-trophy-fill text-secondary me-2"></i>
+                                            <span class="fw-bold">SILVER</span>
+                                            {% else %}
+                                            <i class="bi bi-person-fill text-dark me-2"></i>
+                                            <span class="fw-bold">REGULAR</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-muted">Скидка:</small>
+                                        <div class="h5 text-success">{{ discount_percent }}%</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Использование баллов -->
+                            {% if current_user.can_use_points() %}
+                            <div class="mb-4 p-3 border rounded">
+                                <div class="form-check">
+                                    <input class="form-check-input" 
+                                           type="checkbox" 
+                                           id="use_points" 
+                                           name="use_points">
+                                    <label class="form-check-label fw-bold" for="use_points">
+                                        Использовать баллы
+                                    </label>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        У вас {{ current_user.loyalty_points }} баллов. 
+                                        1 балл = 1 BYN. Можно оплатить до 50% стоимости заказа.
+                                        После оплаты баллы будут списаны.
+                                    </small>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Итоговая стоимость -->
+                            <div class="mb-4 p-3 border rounded bg-success bg-opacity-10">
+                                <h6>Итоговая стоимость</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Стоимость услуги:</span>
+                                            <span>{{ "%.2f"|format(original_price) }} BYN</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2 text-success">
+                                            <span>Ваша скидка ({{ discount_percent }}%):</span>
+                                            <span>-{{ "%.2f"|format(discount_amount) }} BYN</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>С учетом скидки:</span>
+                                            <span class="fw-bold">{{ "%.2f"|format(price_with_discount) }} BYN</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="text-center p-3 border rounded bg-white">
+                                            <small class="text-muted d-block">ИТОГО К ОПЛАТЕ</small>
+                                            <div class="h3 text-success" id="final-price">
+                                                {{ "%.2f"|format(price_with_discount) }} BYN
+                                            </div>
+                                            <small class="text-muted">*Баллы будут списаны после подтверждения</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ url_for('service_detail', service_id=service.id) }}" 
+                                   class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i> Назад
+                                </a>
+                                <button type="submit" class="btn btn-primary-custom">
+                                    <i class="bi bi-check-circle me-1"></i> Подтвердить заказ
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Боковая панель -->
+            <div class="col-lg-4">
+                <!-- Блок с баллами -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h6 class="card-title mb-0">
+                            <i class="bi bi-star-fill me-2 text-warning"></i>Ваши баллы
+                        </h6>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="display-4 text-warning mb-2">
+                            {{ current_user.loyalty_points }}
+                        </div>
+                        <p class="text-muted small mb-0">Накоплено баллов</p>
+                        <hr class="my-3">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="h5">{{ "%.2f"|format(current_user.total_spent) }}</div>
+                                <small class="text-muted">Потрачено</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="h5">{{ current_user.get_discount_percent() }}%</div>
+                                <small class="text-muted">Скидка</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Уровни лояльности -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h6 class="card-title mb-0">
+                            <i class="bi bi-award me-2"></i>Уровни лояльности
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item {% if current_user.loyalty_level == 'regular' %}active{% endif %}">
+                                <div class="d-flex justify-content-between">
+                                    <span>
+                                        <i class="bi bi-person-fill me-2"></i>Regular
+                                    </span>
+                                    <span class="badge bg-secondary">5%</span>
+                                </div>
+                                <small class="text-muted">Все клиенты</small>
+                            </div>
+                            <div class="list-group-item {% if current_user.loyalty_level == 'silver' %}active{% endif %}">
+                                <div class="d-flex justify-content-between">
+                                    <span>
+                                        <i class="bi bi-trophy-fill text-secondary me-2"></i>Silver
+                                    </span>
+                                    <span class="badge bg-secondary">10%</span>
+                                </div>
+                                <small class="text-muted">От 1000 BYN</small>
+                            </div>
+                            <div class="list-group-item {% if current_user.loyalty_level == 'gold' %}active{% endif %}">
+                                <div class="d-flex justify-content-between">
+                                    <span>
+                                        <i class="bi bi-trophy-fill text-warning me-2"></i>Gold
+                                    </span>
+                                    <span class="badge bg-warning">15%</span>
+                                </div>
+                                <small class="text-muted">От 5000 BYN</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Как получить баллы -->
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">Как получить больше баллов?</h6>
+                        <ul class="list-unstyled small">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>1 балл за каждые потраченные 1 BYN</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>+100 баллов за первый заказ</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>+50 баллов за отзыв</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Бонусы в дни рождения</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const usePointsCheckbox = document.getElementById('use_points');
+    const finalPriceElement = document.getElementById('final-price');
+    const originalPrice = {{ price_with_discount }};
+    const userPoints = {{ current_user.loyalty_points }};
+    
+    if (usePointsCheckbox) {
+        usePointsCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                // Максимум 50% можно оплатить баллами
+                const maxPointsValue = originalPrice * 0.5;
+                const pointsToUse = Math.min(userPoints, maxPointsValue);
+                const finalPrice = Math.max(0, originalPrice - pointsToUse);
+                
+                finalPriceElement.textContent = finalPrice.toFixed(2) + ' BYN';
+                finalPriceElement.classList.add('text-danger');
+                
+                // Восстановим цвет через секунду
+                setTimeout(() => {
+                    finalPriceElement.classList.remove('text-danger');
+                    finalPriceElement.classList.add('text-success');
+                }, 1000);
+            } else {
+                finalPriceElement.textContent = originalPrice.toFixed(2) + ' BYN';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

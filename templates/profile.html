@@ -1,199 +1,351 @@
-{% extends 'base.html' %} 
-{% block title %} Профиль {% endblock %} 
-{% block main %}
+{% extends 'base.html' %} {% block title %} Профиль {% endblock %} {% block main
+%}
 
-    <section class="py-5">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-lg-8">
-            <div class="card shadow-sm">
-              <div class="card-header bg-light">
-                <h3 class="card-title mb-0">
-                  <i class="bi bi-person-circle me-2"></i>Мой профиль
-                </h3>
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="card shadow-sm">
+          <div class="card-header bg-light">
+            <h3 class="card-title mb-0">
+              <i class="bi bi-person-circle me-2"></i>Мой профиль
+            </h3>
+          </div>
+          <div class="card-body">
+            <div class="row mb-4">
+              <div class="col-md-4">
+                <div class="card border-0 bg-light">
+                  <div class="card-body text-center">
+                    <div class="d-flex justify-content-center mb-3">
+                      {% if current_user.loyalty_level == 'gold' %}
+                      <i class="bi bi-trophy-fill display-4 text-warning"></i>
+                      {% elif current_user.loyalty_level == 'silver' %}
+                      <i class="bi bi-trophy-fill display-4 text-secondary"></i>
+                      {% else %}
+                      <i class="bi bi-person-circle display-4 text-dark"></i>
+                      {% endif %}
+                    </div>
+                    <h6 class="text-uppercase">Ваш уровень</h6>
+                    <h4
+                      class="mb-2 {% if current_user.loyalty_level == 'gold' %}text-warning {% elif current_user.loyalty_level == 'silver' %}text-secondary {% else %}text-dark{% endif %}"
+                    >
+                      {{ current_user.loyalty_level|upper }}
+                    </h4>
+                    <small class="text-muted"
+                      >Скидка {{ current_user.get_discount_percent() }}%</small
+                    >
+                  </div>
+                </div>
               </div>
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-4 text-center mb-4">
-                    <div class="mb-3">
-                      <img
-                        src="{{ url_for('static', filename='images/about.jpg') }}"
-                        alt="Аватар"
-                        class="rounded-circle img-thumbnail"
-                        width="150"
-                        height="150"
+
+              <div class="col-md-4">
+                <div class="card border-0 bg-light">
+                  <div class="card-body text-center">
+                    <i class="bi bi-star-fill display-4 text-warning mb-3"></i>
+                    <h6>Бонусные баллы</h6>
+                    <h3 class="mb-2">{{ current_user.loyalty_points }}</h3>
+                    <small class="text-muted">
+                      {% if current_user.can_use_points() %}
+                      <span class="text-success">✓ Можно использовать</span>
+                      {% else %} Нужно еще {{ 100 - current_user.loyalty_points
+                      }} до использования {% endif %}
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="card border-0 bg-light">
+                  <div class="card-body text-center">
+                    <i class="bi bi-cash-stack display-4 text-success mb-3"></i>
+                    <h6>Всего потрачено</h6>
+                    <h3 class="mb-2">
+                      {{ "%.2f"|format(current_user.total_spent) }}
+                    </h3>
+                    <small class="text-muted">
+                      {% if current_user.loyalty_level == 'regular' %} До
+                      silver: {{ "%.2f"|format(1000 - current_user.total_spent)
+                      }} {% elif current_user.loyalty_level == 'silver' %} До
+                      gold: {{ "%.2f"|format(5000 - current_user.total_spent) }}
+                      {% else %} Вы на максимальном уровне! {% endif %}
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <form method="post">
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="first_name" class="form-label">Имя</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="first_name"
+                        name="first_name"
+                        value="{{ current_user.first_name or '' }}"
                       />
                     </div>
-                    <button class="btn btn-outline-primary btn-sm">
-                      <i class="bi bi-camera me-1"></i>Сменить фото
+                    <div class="col-md-6">
+                      <label for="last_name" class="form-label">Фамилия</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="last_name"
+                        name="last_name"
+                        value="{{ current_user.last_name or '' }}"
+                      />
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="email"
+                      value="{{ current_user.email }}"
+                      disabled
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="phone" class="form-label">Телефон</label>
+                    <input
+                      type="tel"
+                      class="form-control"
+                      id="phone"
+                      name="phone"
+                      value="{{ current_user.phone or '' }}"
+                      placeholder="+375 (XX) XXX-XX-XX"
+                    />
+                  </div>
+
+                  <div class="text-end">
+                    <button type="submit" class="btn btn-primary-custom">
+                      <i class="bi bi-check-circle me-1"></i>Сохранить изменения
                     </button>
                   </div>
-                  <div class="col-md-8">
-                    <form>
-                      <div class="row mb-3">
-                        <div class="col-md-6">
-                          <label for="firstName" class="form-label">Имя</label>
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="firstName"
-                            value="Анна"
-                          />
-                        </div>
-                        <div class="col-md-6">
-                          <label for="lastName" class="form-label">Фамилия</label>
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="lastName"
-                            value="Иванова"
-                          />
-                        </div>
-                      </div>
-                      <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input
-                          type="email"
-                          class="form-control"
-                          id="email"
-                          value="anna@example.com"
-                        />
-                      </div>
-                      <div class="mb-3">
-                        <label for="phone" class="form-label">Телефон</label>
-                        <input
-                          type="tel"
-                          class="form-control"
-                          id="phone"
-                          value="+375 (29) 123-45-67"
-                        />
-                      </div>
-                      <div class="mb-3">
-                        <label for="birthday" class="form-label">Дата рождения</label>
-                        <input
-                          type="date"
-                          class="form-control"
-                          id="birthday"
-                          value="1990-05-15"
-                        />
-                      </div>
-                      <div class="text-end">
-                        <button type="submit" class="btn btn-primary-custom">
-                          <i class="bi bi-check-circle me-1"></i>Сохранить изменения
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
+                </form>
+                <div class="my-3">
+                  {% if current_user.loyalty_level == 'regular' %}
+        <div class="progress mb-2" style="height: 20px;">
+            <div class="progress-bar bg-secondary" 
+                 style="width: {{ (current_user.total_spent / 1000 * 100)|int }}%">
+                {{ (current_user.total_spent / 1000 * 100)|int }}%
             </div>
-
-            <!-- Блок с заказами -->
-            <div class="card shadow-sm mt-4">
-              <div class="card-header bg-light">
-                <h4 class="card-title mb-0">
-                  <i class="bi bi-bag me-2"></i>Мои заказы
-                </h4>
-              </div>
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table table-hover">
-                    <thead>
-                      <tr>
-                        <th>№ Заказа</th>
-                        <th>Услуга</th>
-                        <th>Дата</th>
-                        <th>Статус</th>
-                        <th>Сумма</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>#12345</td>
-                        <td>Портретная съемка</td>
-                        <td>15.01.2025</td>
-                        <td><span class="badge bg-success">Завершен</span></td>
-                        <td>150 BYN</td>
-                      </tr>
-                      <tr>
-                        <td>#12346</td>
-                        <td>Печать фото 10×15</td>
-                        <td>20.01.2025</td>
-                        <td><span class="badge bg-warning">В работе</span></td>
-                        <td>25 BYN</td>
-                      </tr>
-                      <tr>
-                        <td>#12347</td>
-                        <td>Фотокнига</td>
-                        <td>25.01.2025</td>
-                        <td><span class="badge bg-info">Ожидает</span></td>
-                        <td>80 BYN</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+        </div>
+        <div class="d-flex justify-content-between small">
+            <span>Regular (0 BYN)</span>
+            <span>Silver (1000 BYN)</span>
+        </div>
+        <p class="text-center mt-2">
+            <small class="text-muted">
+                Осталось потратить {{ "%.2f"|format(1000 - current_user.total_spent) }} BYN до уровня Silver
+            </small>
+        </p>
+        
+        {% elif current_user.loyalty_level == 'silver' %}
+        <div class="progress mb-2" style="height: 20px;">
+            <div class="progress-bar bg-warning" 
+                 style="width: {{ ((current_user.total_spent - 1000) / 4000 * 100)|int }}%">
+                {{ ((current_user.total_spent - 1000) / 4000 * 100)|int }}%
             </div>
-
-            <!-- Блок с предстоящими съемками -->
-            <div class="card shadow-sm mt-4">
-              <div class="card-header bg-light">
-                <h4 class="card-title mb-0">
-                  <i class="bi bi-calendar-event me-2"></i>Предстоящие съемки
-                </h4>
-              </div>
-              <div class="card-body">
-                <div class="list-group">
-                  <div class="list-group-item">
-                    <div class="d-flex w-100 justify-content-between">
-                      <h5 class="mb-1">Семейная фотосессия</h5>
-                      <small class="text-success">01.02.2025</small>
-                    </div>
-                    <p class="mb-1">Студия "НАРА", 15:00</p>
-                    <small>Продолжительность: 2 часа</small>
-                  </div>
-                  <div class="list-group-item">
-                    <div class="d-flex w-100 justify-content-between">
-                      <h5 class="mb-1">Детская съемка</h5>
-                      <small class="text-success">10.02.2025</small>
-                    </div>
-                    <p class="mb-1">Студия "НАРА", 11:00</p>
-                    <small>Продолжительность: 1 час</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Быстрые действия -->
-            <div class="card shadow-sm mt-4">
-              <div class="card-header bg-light">
-                <h4 class="card-title mb-0">
-                  <i class="bi bi-lightning me-2"></i>Быстрые действия
-                </h4>
-              </div>
-              <div class="card-body">
-                <div class="row g-3">
-                  <div class="col-md-4">
-                    <a href="{{ url_for('price') }}" class="btn btn-outline-primary w-100">
-                      <i class="bi bi-plus-circle me-1"></i>Новый заказ
-                    </a>
-                  </div>
-                  <div class="col-md-4">
-                    <a href="{{ url_for('index') }}#contact" class="btn btn-outline-primary w-100">
-                      <i class="bi bi-calendar-plus me-1"></i>Записаться на съемку
-                    </a>
-                  </div>
-                  <div class="col-md-4">
-                    <button class="btn btn-outline-secondary w-100">
-                      <i class="bi bi-box-arrow-right me-1"></i>Выйти
-                    </button>
-                  </div>
+        </div>
+        <div class="d-flex justify-content-between small">
+            <span>Silver (1000 BYN)</span>
+            <span>Gold (5000 BYN)</span>
+        </div>
+        <p class="text-center mt-2">
+            <small class="text-muted">
+                Осталось потратить {{ "%.2f"|format(5000 - current_user.total_spent) }} BYN до уровня Gold
+            </small>
+        </p>
+        
+        {% else %}
+        <div class="text-center py-3">
+            <i class="bi bi-trophy-fill display-4 text-warning mb-2"></i>
+            <h5>Вы достигли максимального уровня!</h5>
+            <p class="text-muted mb-0">Поздравляем! Вы получаете максимальную скидку 15%</p>
+        </div>
+        {% endif %}
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Блок с заказами -->
+        <div class="card shadow-sm mt-4">
+          <div
+            class="card-header bg-light d-flex justify-content-between align-items-center"
+          >
+            <h4 class="card-title mb-0">
+              <i class="bi bi-bag me-2"></i>Мои заказы
+            </h4>
+            <span class="badge bg-secondary">{{ orders|length }} заказов</span>
+          </div>
+          <div class="card-body">
+            {% if orders %}
+            <div class="list-group">
+              {% for order in orders %}
+              <div class="list-group-item">
+                <div
+                  class="d-flex justify-content-between align-items-start mb-2"
+                >
+                  <div class="flex-grow-1">
+                    <h6 class="mb-1">{{ order.service.title }}</h6>
+                    <small class="text-muted">
+                      Заказано: {{ order.created_at.strftime('%d.%m.%Y в %H:%M')
+                      }}
+                    </small>
+                  </div>
+                  <div class="ms-3">
+                    {% if order.status == 'pending' %}
+                    <span class="badge bg-warning">Ожидает</span>
+                    {% elif order.status == 'cancelled' %}
+                    <span class="badge bg-danger">Отменен</span>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div
+                  class="d-flex justify-content-between align-items-center mt-2"
+                >
+                  <div>
+                    <span class="h5">{{ order.service.price_from }}</span>
+                    {% if order.service.price_period %}
+                    <span class="text-muted ms-1"
+                      >/ {{ order.service.price_period }}</span
+                    >
+                    {% endif %}
+                  </div>
+
+                  {% if order.status == 'pending' %}
+                  <div>
+                    <a
+                      href="{{ url_for('cancel_order', order_id=order.id) }}"
+                      class="btn btn-sm btn-outline-danger"
+                      onclick="return confirm('Отменить заказ?');"
+                    >
+                      <i class="bi bi-x-circle me-1"></i> Отменить
+                    </a>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+              <i class="bi bi-bag-x display-4 text-muted"></i>
+              <h5 class="mt-3">У вас пока нет заказов</h5>
+              <p class="text-muted">
+                Оформите свой первый заказ на странице услуги
+              </p>
+              <a href="{{ url_for('price') }}" class="btn btn-primary-custom">
+                <i class="bi bi-plus-circle me-1"></i>Перейти к услугам
+              </a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Блок с моими отзывами -->
+        <div class="card shadow-sm mt-4">
+          <div class="card-header bg-light">
+            <h4 class="card-title mb-0">
+              <i class="bi bi-chat-text me-2"></i>Мои отзывы
+            </h4>
+          </div>
+          <div class="card-body">
+            {% if current_user.reviews %}
+            <div class="list-group">
+              {% for review in current_user.reviews|sort(attribute='created_at',
+              reverse=true) %}
+              <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between mb-2">
+                  <h6 class="mb-1">
+                    <a
+                      href="{{ url_for('service_detail', service_id=review.service_id) }}"
+                      class="text-decoration-none"
+                    >
+                      {{ review.service.title }}
+                    </a>
+                  </h6>
+                  <small class="text-muted"
+                    >{{ review.created_at.strftime('%d.%m.%Y') }}</small
+                  >
+                </div>
+                <p class="mb-2">
+                  {{ review.content[:150] }}{% if review.content|length > 150
+                  %}...{% endif %}
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted">
+                    <a
+                      href="{{ url_for('service_detail', service_id=review.service_id) }}#reviews"
+                      class="text-decoration-none"
+                    >
+                      <i class="bi bi-arrow-right me-1"></i>К отзыву
+                    </a>
+                  </small>
+                  <form
+                    method="POST"
+                    action="{{ url_for('delete_review', review_id=review.id) }}"
+                    onsubmit="return confirm('Удалить отзыв?');"
+                    class="d-inline"
+                  >
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </form>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+              <i class="bi bi-chat-square-text display-4 text-muted"></i>
+              <h5 class="mt-3">У вас пока нет отзывов</h5>
+              <p class="text-muted">
+                Оставляйте отзывы на услуги, которыми воспользовались
+              </p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Быстрые действия -->
+        <div class="card shadow-sm mt-4">
+          <div class="card-header bg-light">
+            <h4 class="card-title mb-0">
+              <i class="bi bi-lightning me-2"></i>Быстрые действия
+            </h4>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <a
+                  href="{{ url_for('price') }}"
+                  class="btn btn-outline-primary w-100"
+                >
+                  <i class="bi bi-plus-circle me-1"></i>Новый заказ
+                </a>
+              </div>
+
+              <div class="col-md-6">
+                <a
+                  href="{{ url_for('logout') }}"
+                  class="btn btn-outline-secondary w-100"
+                >
+                  <i class="bi bi-box-arrow-right me-1"></i>Выйти
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
-{% endblock %} 
-  
+    </div>
+  </div>
+</section>
+{% endblock %}

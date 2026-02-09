@@ -1,0 +1,30 @@
+{% extends 'errors/base_error.html' %}
+
+{% block title %}Некорректный запрос - 400{% endblock %}
+
+{% block error_content %}
+<div class="error-icon mb-4">
+    <i class="bi bi-x-circle display-1 text-primary"></i>
+</div>
+<h1 class="display-4 fw-bold text-primary mb-3">400</h1>
+<h2 class="mb-4">Некорректный запрос</h2>
+<p class="lead mb-4">
+    Сервер не может обработать ваш запрос из-за синтаксической ошибки.
+    Проверьте правильность введенных данных.
+</p>
+<div class="alert alert-info text-start">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    <strong>Что могло пойти не так:</strong>
+    <ul class="mb-0 mt-2">
+        <li>Некорректные данные в форме</li>
+        <li>Проблемы с загружаемыми файлами</li>
+        <li>Неверный формат запроса</li>
+        <li>Истек срок действия формы</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <button onclick="location.reload()" class="btn btn-outline-primary me-3">
+        <i class="bi bi-arrow-clockwise me-2"></i>Обновить страницу
+    </button>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'errors/base_error.html' %}
+
+{% block title %}Ошибка сервера - 500{% endblock %}
+
+{% block error_content %}
+<div class="error-icon mb-4">
+    <i class="bi bi-server display-1 text-danger"></i>
+</div>
+<h1 class="display-4 fw-bold text-danger mb-3">500</h1>
+<h2 class="mb-4">Внутренняя ошибка сервера</h2>
+<p class="lead mb-4">
+    На сервере произошла непредвиденная ошибка. 
+    Мы уже работаем над её устранением.
+</p>
+<div class="alert alert-warning text-start">
+    <i class="bi bi-tools me-2"></i>
+    <strong>Что можно сделать:</strong>
+    <ul class="mb-0 mt-2">
+        <li>Обновить страницу через несколько минут</li>
+        <li>Попробовать выполнить действие позже</li>
+        <li>Если ошибка повторяется, свяжитесь с нами</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <a href="mailto:info@nara-photo.ru" class="btn btn-outline-danger">
+        <i class="bi bi-envelope me-2"></i>Сообщить об ошибке
+    </a>
+</div>
+{% endblock %}

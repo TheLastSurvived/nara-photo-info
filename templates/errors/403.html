@@ -1,0 +1,35 @@
+{% extends 'errors/base_error.html' %}
+
+{% block title %}Доступ запрещен - 403{% endblock %}
+
+{% block error_content %}
+<div class="error-icon mb-4">
+    <i class="bi bi-shield-exclamation display-1 text-warning"></i>
+</div>
+<h1 class="display-4 fw-bold text-warning mb-3">403</h1>
+<h2 class="mb-4">Доступ запрещен</h2>
+<p class="lead mb-4">
+    У вас нет прав для доступа к этой странице. 
+    Возможно, требуется авторизация или у вас недостаточно прав.
+</p>
+<div class="alert alert-warning text-start">
+    <i class="bi bi-key me-2"></i>
+    <strong>Возможные причины:</strong>
+    <ul class="mb-0 mt-2">
+        <li>Вы не авторизованы в системе</li>
+        <li>У вашей учетной записи нет прав для доступа</li>
+        <li>Страница доступна только администраторам</li>
+        <li>Сессия устарела, требуется повторный вход</li>
+    </ul>
+</div>
+{% if not current_user.is_authenticated %}
+<div class="mt-4">
+    <a href="{{ url_for('login') }}" class="btn btn-primary-custom me-3">
+        <i class="bi bi-box-arrow-in-right me-2"></i>Войти в систему
+    </a>
+    <a href="{{ url_for('register') }}" class="btn btn-outline-primary">
+        <i class="bi bi-person-plus me-2"></i>Зарегистрироваться
+    </a>
+</div>
+{% endif %}
+{% endblock %}
