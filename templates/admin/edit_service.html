@@ -1,0 +1,106 @@
+<!-- templates/admin/edit_service.html -->
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Редактировать услугу{% endblock %}
+{% block header %}Редактирование услуги: {{ service.title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Название услуги *</label>
+                    <input type="text" name="title" class="form-control" 
+                           value="{{ service.title }}" required>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Категория *</label>
+                    <select name="category" class="form-select" required>
+                        <option value="printing" {% if service.category == 'printing' %}selected{% endif %}>
+                            Печать
+                        </option>
+                        <option value="photo_session" {% if service.category == 'photo_session' %}selected{% endif %}>
+                            Фотосессии
+                        </option>
+                        <option value="special_offers" {% if service.category == 'special_offers' %}selected{% endif %}>
+                            Акции и предложения
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Подкатегория</label>
+                    <input type="text" name="subcategory" class="form-control" 
+                           value="{{ service.subcategory or '' }}">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Цена</label>
+                    <input type="text" name="price_from" class="form-control" 
+                           value="{{ service.price_from }}" required>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Период</label>
+                    <input type="text" name="price_period" class="form-control" 
+                           value="{{ service.price_period or '' }}">
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Цена для сортировки (число)</label>
+                    <input type="number" step="0.01" name="price_value" class="form-control" 
+                           value="{{ service.price_value or '' }}">
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Текст кнопки</label>
+                    <input type="text" name="order_button_text" class="form-control" 
+                           value="{{ service.order_button_text or 'Заказать' }}">
+                </div>
+                
+                <div class="col-12 mb-3">
+                    <label class="form-label">Краткое описание (характеристики)</label>
+                    <textarea name="features" class="form-control" rows="3">{{ service.features or '' }}</textarea>
+                </div>
+                
+                <div class="col-12 mb-3">
+                    <label class="form-label">Полное описание</label>
+                    <textarea name="description" class="form-control" rows="5">{{ service.description or '' }}</textarea>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Текущее изображение</label>
+                    {% if service.image_url %}
+                    <div>
+                        <img src="{{ url_for('static', filename=service.image_url) }}" 
+                             alt="{{ service.title }}" style="max-width: 200px; max-height: 200px;">
+                    </div>
+                    {% endif %}
+                    <label class="form-label mt-2">Новое изображение</label>
+                    <input type="file" name="image" class="form-control" accept="image/*">
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <div class="form-check mt-4">
+                        <input type="checkbox" name="is_popular" class="form-check-input" id="isPopular"
+                               {% if service.is_popular %}checked{% endif %}>
+                        <label class="form-check-label" for="isPopular">Популярная услуга</label>
+                    </div>
+                </div>
+                
+                <div class="col-12">
+                    <hr>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Обновить
+                    </button>
+                    <a href="{{ url_for('admin.services') }}" class="btn btn-secondary">
+                        <i class="bi bi-x"></i> Отмена
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

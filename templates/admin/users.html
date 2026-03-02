@@ -1,0 +1,141 @@
+<!-- templates/admin/users.html -->
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Пользователи{% endblock %}
+{% block header %}Управление пользователями{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Список пользователей</h5>
+        <div>
+            <input type="text" id="searchUsers" class="form-control form-control-sm" 
+                   placeholder="Поиск по email или имени..." style="width: 300px;">
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover" id="usersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Имя пользователя</th>
+                        <th>Email</th>
+                        <th>Телефон</th>
+                        <th>Уровень</th>
+                        <th>Баллы</th>
+                        <th>Потрачено</th>
+                        <th>Статус</th>
+                        <th>Админ</th>
+                        <th>Дата регистрации</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>
+                            {{ user.first_name or user.username }}
+                            {% if user.last_name %} {{ user.last_name }}{% endif %}
+                        </td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.phone or '—' }}</td>
+                        <td>
+                            {% if user.loyalty_level == 'gold' %}
+                                <span class="badge bg-warning text-dark">Gold (15%)</span>
+                            {% elif user.loyalty_level == 'silver' %}
+                                <span class="badge bg-secondary">Silver (10%)</span>
+                            {% else %}
+                                <span class="badge bg-info">Regular (5%)</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.loyalty_points }}</td>
+                        <td>{{ "%.2f"|format(user.total_spent) }} BYN</td>
+                        <td>
+                            {% if user.is_active %}
+                                <span class="badge bg-success">Активен</span>
+                            {% else %}
+                                <span class="badge bg-danger">Заблокирован</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.is_admin %}
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                            {% else %}
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.created_at.strftime('%d.%m.%Y') }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" 
+                               class="btn btn-sm btn-info">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="11" class="text-center">Пользователей не найдено</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Статистика по пользователям -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h5 class="card-title">Всего</h5>
+                <h2>{{ users|length }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h5 class="card-title">Активных</h5>
+                <h2>{{ users|selectattr('is_active', 'equalto', true)|list|length }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark">
+            <div class="card-body">
+                <h5 class="card-title">Gold</h5>
+                <h2>{{ users|selectattr('loyalty_level', 'equalto', 'gold')|list|length }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h5 class="card-title">Админов</h5>
+                <h2>{{ users|selectattr('is_admin', 'equalto', true)|list|length }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('searchUsers').addEventListener('keyup', function() {
+    let searchText = this.value.toLowerCase();
+    let tableRows = document.querySelectorAll('#usersTable tbody tr');
+    
+    tableRows.forEach(row => {
+        let text = row.textContent.toLowerCase();
+        if (text.includes(searchText)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

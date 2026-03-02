@@ -13,9 +13,11 @@ import os
 from datetime import datetime, date
 import uuid
 from werkzeug.exceptions import HTTPException
+from admin import admin_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
+app.register_blueprint(admin_bp)
 
 # Инициализация расширений
 db.init_app(app)
@@ -37,6 +39,10 @@ def load_user(user_id):
 
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
+
+@app.context_processor
+def utility_processor():
+    return {'datetime': datetime}
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -514,6 +520,7 @@ def bad_request(e):
 @app.errorhandler(401)
 def unauthorized(e):
     return redirect(url_for('login'))  # Перенаправляем на страницу входа
+
 
 # Обработчик для всех остальных ошибок
 @app.errorhandler(Exception)

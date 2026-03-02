@@ -1,0 +1,82 @@
+<!-- templates/admin/messages.html -->
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Сообщения{% endblock %}
+{% block header %}Сообщения с контактной формы{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Входящие сообщения</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Email</th>
+                        <th>Сообщение</th>
+                        <th>Дата</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for message in messages %}
+                    <tr>
+                        <td>{{ message.id }}</td>
+                        <td>{{ message.name }}</td>
+                        <td>{{ message.surname }}</td>
+                        <td>{{ message.email or '—' }}</td>
+                        <td>{{ message.message|truncate(100) }}</td>
+                        <td>{{ message.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-info" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#messageModal{{ message.id }}">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <form action="{{ url_for('admin.delete_message', message_id=message.id) }}" 
+                                  method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger" 
+                                        onclick="return confirm('Удалить это сообщение?')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <!-- Modal for message -->
+                    <div class="modal fade" id="messageModal{{ message.id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Сообщение от {{ message.name }} {{ message.surname }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><strong>Email:</strong> {{ message.email or 'Не указан' }}</p>
+                                    <p><strong>Дата:</strong> {{ message.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+                                    <hr>
+                                    <p><strong>Сообщение:</strong></p>
+                                    <p>{{ message.message }}</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center">Новых сообщений нет</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

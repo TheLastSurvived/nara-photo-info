@@ -1,0 +1,188 @@
+<!-- templates/admin/user_detail.html -->
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Пользователь {{ user.email }}{% endblock %}
+{% block header %}Профиль пользователя{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Информация о пользователе -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Информация о пользователе</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-circle" style="font-size: 5rem;"></i>
+                    <h4 class="mt-2">{{ user.first_name or user.username }} {{ user.last_name or '' }}</h4>
+                    <p class="text-muted">{{ user.email }}</p>
+                </div>
+                
+                <table class="table">
+                    <tr>
+                        <th>ID:</th>
+                        <td>{{ user.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Телефон:</th>
+                        <td>{{ user.phone or 'Не указан' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Уровень:</th>
+                        <td>
+                            {% if user.loyalty_level == 'gold' %}
+                                <span class="badge bg-warning text-dark">Gold</span>
+                            {% elif user.loyalty_level == 'silver' %}
+                                <span class="badge bg-secondary">Silver</span>
+                            {% else %}
+                                <span class="badge bg-info">Regular</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Баллы:</th>
+                        <td>{{ user.loyalty_points }}</td>
+                    </tr>
+                    <tr>
+                        <th>Всего потрачено:</th>
+                        <td>{{ "%.2f"|format(user.total_spent) }} BYN</td>
+                    </tr>
+                    <tr>
+                        <th>Скидка:</th>
+                        <td>{{ user.get_discount_percent() }}%</td>
+                    </tr>
+                    <tr>
+                        <th>Статус:</th>
+                        <td>
+                            {% if user.is_active %}
+                                <span class="badge bg-success">Активен</span>
+                            {% else %}
+                                <span class="badge bg-danger">Заблокирован</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Администратор:</th>
+                        <td>
+                            {% if user.is_admin %}
+                                <span class="badge bg-primary">Да</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Нет</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Дата регистрации:</th>
+                        <td>{{ user.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                    </tr>
+                </table>
+                
+                <div class="d-grid gap-2">
+                    {% if user.id != current_user.id %}
+                        <form action="{{ url_for('admin.toggle_admin', user_id=user.id) }}" method="POST" class="mb-2">
+                            <button type="submit" class="btn btn-warning w-100">
+                                {% if user.is_admin %}
+                                    <i class="bi bi-person-dash"></i> Снять права администратора
+                                {% else %}
+                                    <i class="bi bi-person-plus"></i> Сделать администратором
+                                {% endif %}
+                            </button>
+                        </form>
+                        
+                        <form action="{{ url_for('admin.toggle_active', user_id=user.id) }}" method="POST">
+                            <button type="submit" class="btn {% if user.is_active %}btn-danger{% else %}btn-success{% endif %} w-100">
+                                {% if user.is_active %}
+                                    <i class="bi bi-lock"></i> Заблокировать пользователя
+                                {% else %}
+                                    <i class="bi bi-unlock"></i> Разблокировать пользователя
+                                {% endif %}
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> Это ваш профиль
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Заказы пользователя -->
+    <div class="col-md-8 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Заказы пользователя</h5>
+            </div>
+            <div class="card-body">
+                {% if orders %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Услуга</th>
+                                <th>Сумма</th>
+                                <th>Статус</th>
+                                <th>Дата</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>#{{ order.id }}</td>
+                                <td>{{ order.service.title }}</td>
+                                <td>{{ "%.2f"|format(order.final_price) }} BYN</td>
+                                <td>
+                                    {% if order.status == 'pending' %}
+                                        <span class="badge bg-warning">Ожидание</span>
+                                    {% elif order.status == 'completed' %}
+                                        <span class="badge bg-success">Выполнен</span>
+                                    {% elif order.status == 'cancelled' %}
+                                        <span class="badge bg-danger">Отменен</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ order.created_at.strftime('%d.%m.%Y') }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.order_detail', order_id=order.id) }}" 
+                                       class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">У пользователя пока нет заказов</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Отзывы пользователя -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Отзывы пользователя</h5>
+            </div>
+            <div class="card-body">
+                {% if reviews %}
+                {% for review in reviews %}
+                <div class="border-bottom mb-3 pb-3">
+                    <div class="d-flex justify-content-between">
+                        <h6>Отзыв на услугу: {{ review.service.title if review.service else 'Услуга удалена' }}</h6>
+                        <small class="text-muted">{{ review.created_at.strftime('%d.%m.%Y %H:%M') }}</small>
+                    </div>
+                    <p class="mb-1">{{ review.content }}</p>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="text-muted mb-0">Пользователь пока не оставлял отзывов</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

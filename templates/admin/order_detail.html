@@ -1,0 +1,145 @@
+<!-- templates/admin/order_detail.html -->
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Заказ №{{ order.id }}{% endblock %}
+{% block header %}Детали заказа #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Информация о заказе</h5>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>ID заказа:</th>
+                        <td>#{{ order.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Дата создания:</th>
+                        <td>{{ order.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Статус:</th>
+                        <td>
+                            {% if order.status == 'pending' %}
+                                <span class="badge bg-warning">В обработке</span>
+                            {% elif order.status == 'completed' %}
+                                <span class="badge bg-success">Выполнен</span>
+                            {% elif order.status == 'cancelled' %}
+                                <span class="badge bg-danger">Отменен</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+                
+                <form action="{{ url_for('admin.update_order', order_id=order.id) }}" method="POST">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <select name="status" class="form-select">
+                                <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>
+                                    В обработке
+                                </option>
+                                <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>
+                                    Выполнен
+                                </option>
+                                <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>
+                                    Отменен
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-save"></i> Обновить
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Финансовая информация</h5>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>Исходная цена:</th>
+                        <td>{{ "%.2f"|format(order.original_price) }} BYN</td>
+                    </tr>
+                    <tr>
+                        <th>Скидка:</th>
+                        <td>{{ order.discount_percent }}%</td>
+                    </tr>
+                    <tr>
+                        <th>Сумма скидки:</th>
+                        <td>{{ "%.2f"|format(order.original_price * order.discount_percent / 100) }} BYN</td>
+                    </tr>
+                    <tr>
+                        <th>Использовано баллов:</th>
+                        <td>{{ order.points_used }}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-primary">ИТОГО:</th>
+                        <td class="table-primary"><strong>{{ "%.2f"|format(order.final_price) }} BYN</strong></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Информация о клиенте</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Имя:</strong> {{ order.user.first_name or order.user.username }} {{ order.user.last_name or '' }}</p>
+                <p><strong>Email:</strong> {{ order.user.email }}</p>
+                <p><strong>Телефон:</strong> {{ order.user.phone or 'Не указан' }}</p>
+                <p><strong>Уровень:</strong> 
+                    {% if order.user.loyalty_level == 'gold' %}
+                        <span class="badge bg-warning text-dark">Gold</span>
+                    {% elif order.user.loyalty_level == 'silver' %}
+                        <span class="badge bg-secondary">Silver</span>
+                    {% else %}
+                        <span class="badge bg-info">Regular</span>
+                    {% endif %}
+                </p>
+                <a href="{{ url_for('admin.user_detail', user_id=order.user.id) }}" class="btn btn-sm btn-info">
+                    <i class="bi bi-person"></i> Профиль клиента
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Информация об услуге</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Услуга:</strong> {{ order.service.title }}</p>
+                <p><strong>Категория:</strong> 
+                    {% if order.service.category == 'printing' %}
+                        Печать
+                    {% elif order.service.category == 'photo_session' %}
+                        Фотосессия
+                    {% elif order.service.category == 'special_offers' %}
+                        Акция
+                    {% endif %}
+                </p>
+                <p><strong>Описание:</strong> {{ order.service.description|truncate(200) }}</p>
+                <a href="{{ url_for('admin.edit_service', service_id=order.service.id) }}" class="btn btn-sm btn-warning">
+                    <i class="bi bi-pencil"></i> Редактировать услугу
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

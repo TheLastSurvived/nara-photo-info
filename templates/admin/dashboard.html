@@ -1,0 +1,292 @@
+<!-- templates/admin/dashboard.html -->
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Главная{% endblock %}
+{% block header %}Главная панель{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center">
+                <div class="stat-icon">
+                    <i class="bi bi-people"></i>
+                </div>
+                <div class="ms-3">
+                    <h6 class="text-muted mb-1">Пользователи</h6>
+                    <h3 class="mb-0">{{ total_users }}</h3>
+                    <small class="text-success">+{{ new_users }} за 7 дней</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center">
+                <div class="stat-icon">
+                    <i class="bi bi-cart-check"></i>
+                </div>
+                <div class="ms-3">
+                    <h6 class="text-muted mb-1">Заказы</h6>
+                    <h3 class="mb-0">{{ total_orders }}</h3>
+                    <small class="text-warning">{{ pending_orders }} в обработке</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center">
+                <div class="stat-icon">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <div class="ms-3">
+                    <h6 class="text-muted mb-1">Выручка</h6>
+                    <h3 class="mb-0">{{ "%.2f"|format(total_revenue) }} BYN</h3>
+                    <small class="text-info">за всё время</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center">
+                <div class="stat-icon">
+                    <i class="bi bi-star"></i>
+                </div>
+                <div class="ms-3">
+                    <h6 class="text-muted mb-1">Отзывы</h6>
+                    <h3 class="mb-0">{{ total_reviews }}</h3>
+                    <small class="text-primary">всего</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Графики -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Динамика заказов (30 дней)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="ordersChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Пользователи по уровням</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="usersPieChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Последние заказы -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Последние заказы</h5>
+                <a href="{{ url_for('admin.orders') }}" class="btn btn-sm btn-primary">Все заказы</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Пользователь</th>
+                                <th>Сумма</th>
+                                <th>Статус</th>
+                                <th>Дата</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                            <tr>
+                                <td>#{{ order.id }}</td>
+                                <td>{{ order.user.first_name or order.user.username }}</td>
+                                <td>{{ "%.2f"|format(order.final_price) }} BYN</td>
+                                <td>
+                                    {% if order.status == 'pending' %}
+                                        <span class="badge bg-warning">Ожидание</span>
+                                    {% elif order.status == 'completed' %}
+                                        <span class="badge bg-success">Выполнен</span>
+                                    {% elif order.status == 'cancelled' %}
+                                        <span class="badge bg-danger">Отменен</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ order.created_at.strftime('%d.%m.%Y') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Новые пользователи</h5>
+                <a href="{{ url_for('admin.users') }}" class="btn btn-sm btn-primary">Все пользователи</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Имя</th>
+                                <th>Email</th>
+                                <th>Уровень</th>
+                                <th>Дата</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in recent_users %}
+                            <tr>
+                                <td>{{ user.first_name or user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    {% if user.loyalty_level == 'gold' %}
+                                        <span class="badge bg-warning text-dark">Gold</span>
+                                    {% elif user.loyalty_level == 'silver' %}
+                                        <span class="badge bg-secondary">Silver</span>
+                                    {% else %}
+                                        <span class="badge bg-info">Regular</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ user.created_at.strftime('%d.%m.%Y') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Статусы заказов -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Статусы заказов</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <div class="p-3 bg-warning bg-opacity-10 rounded">
+                            <h3>{{ pending_orders }}</h3>
+                            <p class="text-muted mb-0">В обработке</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-success bg-opacity-10 rounded">
+                            <h3>{{ completed_orders }}</h3>
+                            <p class="text-muted mb-0">Выполнено</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-danger bg-opacity-10 rounded">
+                            <h3>{{ cancelled_orders }}</h3>
+                            <p class="text-muted mb-0">Отменено</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Загружаем данные для графиков
+    fetch('{{ url_for("admin.api_stats") }}')
+        .then(response => response.json())
+        .then(data => {
+            // График заказов
+            if (data.orders_by_day.length > 0) {
+                const ctx = document.getElementById('ordersChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.orders_by_day.map(d => d.date),
+                        datasets: [{
+                            label: 'Заказы',
+                            data: data.orders_by_day.map(d => d.count),
+                            borderColor: 'rgb(102, 126, 234)',
+                            tension: 0.1
+                        }, {
+                            label: 'Выручка (BYN)',
+                            data: data.orders_by_day.map(d => d.revenue),
+                            borderColor: 'rgb(118, 75, 162)',
+                            tension: 0.1,
+                            yAxisID: 'y1'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Количество заказов'
+                                }
+                            },
+                            y1: {
+                                beginAtZero: true,
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Выручка (BYN)'
+                                },
+                                grid: {
+                                    drawOnChartArea: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Круговая диаграмма пользователей
+            if (data.users_by_level.length > 0) {
+                const pieCtx = document.getElementById('usersPieChart').getContext('2d');
+                new Chart(pieCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.users_by_level.map(d => {
+                            if (d.level == 'gold') return 'Gold (15%)';
+                            if (d.level == 'silver') return 'Silver (10%)';
+                            return 'Regular (5%)';
+                        }),
+                        datasets: [{
+                            data: data.users_by_level.map(d => d.count),
+                            backgroundColor: ['rgb(255, 193, 7)', 'rgb(108, 117, 125)', 'rgb(13, 110, 253)']
+                        }]
+                    }
+                });
+            }
+        });
+});
+</script>
+{% endblock %}
