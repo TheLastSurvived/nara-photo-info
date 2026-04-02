@@ -101,6 +101,7 @@ class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now)
+    rating = db.Column(db.Integer, default=5)
     
     # Связи
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

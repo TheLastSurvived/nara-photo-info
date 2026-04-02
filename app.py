@@ -410,10 +410,15 @@ def add_review(service_id):
     service = Service.query.get_or_404(service_id)
     
     content = request.form.get('content', '').strip()
+    rating = request.form.get('rating', type=int)
     
     # Валидация
     if not content or len(content) < 10:
         flash('Отзыв должен содержать минимум 10 символов', 'error')
+        return redirect(url_for('service_detail', service_id=service_id))
+    
+    if not rating or rating < 1 or rating > 5:
+        flash('Пожалуйста, поставьте оценку от 1 до 5 звёзд', 'error')
         return redirect(url_for('service_detail', service_id=service_id))
     
     try:
@@ -427,9 +432,10 @@ def add_review(service_id):
             flash('Вы уже оставляли отзыв на эту услугу', 'info')
             return redirect(url_for('service_detail', service_id=service_id))
         
-        # Создаем новый отзыв
+        # Создаем новый отзыв с рейтингом
         review = Review(
             content=content,
+            rating=rating,
             user_id=current_user.id,
             service_id=service_id
         )
@@ -438,10 +444,11 @@ def add_review(service_id):
         
         # Начисляем 50 баллов за отзыв
         current_user.loyalty_points += 50
-        
         db.session.commit()
         
-        flash('Спасибо за ваш отзыв! +50 баллов на ваш счет!', 'success')
+        # Определяем текстовое описание оценки
+        rating_text = {5: 'отлично', 4: 'хорошо', 3: 'удовлетворительно', 2: 'плохо', 1: 'ужасно'}
+        flash(f'Спасибо за ваш отзыв! Вы оценили услугу на {rating}★ ({rating_text.get(rating, "")}) и получили +50 баллов!', 'success')
         
     except Exception as e:
         db.session.rollback()
