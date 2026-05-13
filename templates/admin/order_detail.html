@@ -9,12 +9,12 @@
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Информация о заказе</h5>
+                <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Информация о заказе</h5>
             </div>
             <div class="card-body">
-                <table class="table">
+                <table class="table table-sm">
                     <tr>
-                        <th>ID заказа:</th>
+                        <th style="width: 40%">ID заказа:</th>
                         <td>#{{ order.id }}</td>
                     </tr>
                     <tr>
@@ -25,29 +25,23 @@
                         <th>Статус:</th>
                         <td>
                             {% if order.status == 'pending' %}
-                                <span class="badge bg-warning">В обработке</span>
+                                <span class="badge bg-warning">🕐 В обработке</span>
                             {% elif order.status == 'completed' %}
-                                <span class="badge bg-success">Выполнен</span>
+                                <span class="badge bg-success">✅ Выполнен</span>
                             {% elif order.status == 'cancelled' %}
-                                <span class="badge bg-danger">Отменен</span>
+                                <span class="badge bg-danger">❌ Отменен</span>
                             {% endif %}
                         </td>
                     </tr>
                 </table>
                 
                 <form action="{{ url_for('admin.update_order', order_id=order.id) }}" method="POST">
-                    <div class="row">
+                    <div class="row g-2">
                         <div class="col-md-8">
                             <select name="status" class="form-select">
-                                <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>
-                                    В обработке
-                                </option>
-                                <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>
-                                    Выполнен
-                                </option>
-                                <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>
-                                    Отменен
-                                </option>
+                                <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>🕐 В обработке</option>
+                                <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>✅ Выполнен</option>
+                                <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>❌ Отменен</option>
                             </select>
                         </div>
                         <div class="col-md-4">
@@ -64,10 +58,10 @@
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Финансовая информация</h5>
+                <h5 class="mb-0"><i class="bi bi-calculator me-2"></i>Финансовая информация</h5>
             </div>
             <div class="card-body">
-                <table class="table">
+                <table class="table table-sm">
                     <tr>
                         <th>Исходная цена:</th>
                         <td>{{ "%.2f"|format(order.original_price) }} BYN</td>
@@ -84,9 +78,9 @@
                         <th>Использовано баллов:</th>
                         <td>{{ order.points_used }}</td>
                     </tr>
-                    <tr>
-                        <th class="table-primary">ИТОГО:</th>
-                        <td class="table-primary"><strong>{{ "%.2f"|format(order.final_price) }} BYN</strong></td>
+                    <tr class="table-primary">
+                        <th class="fw-bold">ИТОГО К ОПЛАТЕ:</th>
+                        <td class="fw-bold fs-5">{{ "%.2f"|format(order.final_price) }} BYN</td>
                     </tr>
                 </table>
             </div>
@@ -96,23 +90,41 @@
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Информация о клиенте</h5>
+                <h5 class="mb-0"><i class="bi bi-person me-2"></i>Информация о клиенте</h5>
             </div>
             <div class="card-body">
-                <p><strong>Имя:</strong> {{ order.user.first_name or order.user.username }} {{ order.user.last_name or '' }}</p>
-                <p><strong>Email:</strong> {{ order.user.email }}</p>
-                <p><strong>Телефон:</strong> {{ order.user.phone or 'Не указан' }}</p>
-                <p><strong>Уровень:</strong> 
-                    {% if order.user.loyalty_level == 'gold' %}
-                        <span class="badge bg-warning text-dark">Gold</span>
-                    {% elif order.user.loyalty_level == 'silver' %}
-                        <span class="badge bg-secondary">Silver</span>
-                    {% else %}
-                        <span class="badge bg-info">Regular</span>
-                    {% endif %}
-                </p>
+                <table class="table table-sm">
+                    <tr>
+                        <th>Имя:</th>
+                        <td>{{ order.user.first_name or order.user.username }} {{ order.user.last_name or '' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email:</th>
+                        <td><a href="mailto:{{ order.user.email }}">{{ order.user.email }}</a></td>
+                    </tr>
+                    <tr>
+                        <th>Телефон:</th>
+                        <td>{{ order.user.phone or 'Не указан' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Уровень лояльности:</th>
+                        <td>
+                            {% if order.user.loyalty_level == 'gold' %}
+                                <span class="badge bg-warning text-dark">🏆 Gold (15%)</span>
+                            {% elif order.user.loyalty_level == 'silver' %}
+                                <span class="badge bg-secondary">🥈 Silver (10%)</span>
+                            {% else %}
+                                <span class="badge bg-info">⭐ Regular (5%)</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Накоплено баллов:</th>
+                        <td>{{ order.user.loyalty_points }}</td>
+                    </tr>
+                </table>
                 <a href="{{ url_for('admin.user_detail', user_id=order.user.id) }}" class="btn btn-sm btn-info">
-                    <i class="bi bi-person"></i> Профиль клиента
+                    <i class="bi bi-person"></i> Полный профиль
                 </a>
             </div>
         </div>
@@ -121,25 +133,391 @@
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Информация об услуге</h5>
+                <h5 class="mb-0"><i class="bi bi-bag me-2"></i>Информация об услуге</h5>
             </div>
             <div class="card-body">
-                <p><strong>Услуга:</strong> {{ order.service.title }}</p>
-                <p><strong>Категория:</strong> 
-                    {% if order.service.category == 'printing' %}
-                        Печать
-                    {% elif order.service.category == 'photo_session' %}
-                        Фотосессия
-                    {% elif order.service.category == 'special_offers' %}
-                        Акция
-                    {% endif %}
-                </p>
-                <p><strong>Описание:</strong> {{ order.service.description|truncate(200) }}</p>
+                <table class="table table-sm">
+                    <tr>
+                        <th>Название:</th>
+                        <td><strong>{{ order.service.title }}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Категория:</th>
+                        <td>
+                            {% if order.service.category == 'printing' %}
+                                🖨️ Печать
+                            {% elif order.service.category == 'photo_session' %}
+                                📷 Фотосессия
+                            {% elif order.service.category == 'special_offers' %}
+                                🎁 Спецпредложение
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Описание:</th>
+                        <td><small>{{ order.service.description|truncate(150) }}</small></td>
+                    </tr>
+                </table>
                 <a href="{{ url_for('admin.edit_service', service_id=order.service.id) }}" class="btn btn-sm btn-warning">
                     <i class="bi bi-pencil"></i> Редактировать услугу
                 </a>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- БЛОК ДЕТАЛЕЙ ЗАКАЗА (из поля details) -->
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="bi bi-clipboard-data me-2"></i>Детали заказа от клиента</h5>
+            </div>
+            <div class="card-body">
+                {% if order.details %}
+                    {% set details = order.details %}
+                    
+                    <!-- ========== ПЕЧАТЬ ФОТОГРАФИЙ ========== -->
+                    {% if order.service.category == 'printing' %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-bordered">
+                                    <tr class="table-secondary">
+                                        <th colspan="2">📄 Параметры печати</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Тип печати:</th>
+                                        <td>
+                                            {% if details.print_type == 'urgent' %}
+                                                <span class="badge bg-danger">Срочная (+50%)</span>
+                                            {% else %}
+                                                <span class="badge bg-success">Стандартная</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Количество фото:</th>
+                                        <td><strong>{{ details.photos_count }} шт.</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Размер:</th>
+                                        <td>{{ details.sizes }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Тип бумаги:</th>
+                                        <td>{{ details.paper_type|capitalize }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Цветокоррекция:</th>
+                                        <td>{% if details.color_correction %}✅ Да{% else %}❌ Нет{% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Желаемая дата:</th>
+                                        <td>{{ details.deadline_date or 'Не указана' }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <!-- ========== ЗАГРУЖЕННЫЕ ФАЙЛЫ ========== -->
+<div class="card mt-3">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">📎 Загруженные файлы</h5>
+    </div>
+    <div class="card-body">
+        {% if order.details %}
+            {% set details = order.details %}
+            
+            <!-- Файлы для печати -->
+            {% if details.file_urls and details.file_urls|length > 0 %}
+                <h6 class="mt-2">🖨️ Файлы для печати ({{ details.file_urls|length }})</h6>
+                <div class="row">
+                    {% for file in details.file_urls %}
+                    <div class="col-md-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                {% if file.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp')) %}
+                                    <img src="{{ url_for('static', filename='uploads/' + file) }}" 
+                                         class="img-fluid rounded mb-2" style="max-height: 120px;">
+                                {% else %}
+                                    <i class="bi bi-file-earmark fs-1"></i>
+                                {% endif %}
+                                <p class="small text-truncate mt-2">{{ file.split('/')|last }}</p>
+                                <a href="{{ url_for('static', filename='uploads/' + file) }}" 
+                                   class="btn btn-sm btn-primary" download>
+                                    ⬇️ Скачать
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <!-- Файлы для фотокниги -->
+            {% if details.uploaded_photos and details.uploaded_photos|length > 0 %}
+                <h6 class="mt-3">📚 Фото для книг ({{ details.uploaded_photos|length }})</h6>
+                <div class="row">
+                    {% for file in details.uploaded_photos %}
+                    <div class="col-md-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <img src="{{ url_for('static', filename='uploads/' + file) }}" 
+                                     class="img-fluid rounded mb-2" style="max-height: 120px;">
+                                <p class="small text-truncate mt-2">{{ file.split('/')|last }}</p>
+                                <a href="{{ url_for('static', filename='uploads/' + file) }}" 
+                                   class="btn btn-sm btn-primary" download>
+                                    ⬇️ Скачать
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <!-- Изображение для сувенира -->
+            {% if details.upload_image %}
+                <h6 class="mt-3">🎁 Изображение для сувенира</h6>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <img src="{{ url_for('static', filename='uploads/' + details.upload_image) }}" 
+                                     class="img-fluid rounded mb-2">
+                                <p class="small">{{ details.upload_image.split('/')|last }}</p>
+                                <a href="{{ url_for('static', filename='uploads/' + details.upload_image) }}" 
+                                   class="btn btn-primary" download>
+                                    ⬇️ Скачать
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            
+            {% if not details.file_urls and not details.uploaded_photos and not details.upload_image %}
+                <div class="alert alert-secondary">📭 Нет загруженных файлов</div>
+            {% endif %}
+            
+        {% else %}
+            <div class="alert alert-warning">⚠️ Нет данных</div>
+        {% endif %}
+    </div>
+</div>
+                            <div class="col-12">
+                                <div class="alert alert-light">
+                                    <strong>💬 Комментарий клиента:</strong><br>
+                                    {{ details.comments or 'Нет комментариев' }}
+                                </div>
+                            </div>
+                        </div>
+                    
+                    <!-- ========== ФОТОКНИГИ И АЛЬБОМЫ ========== -->
+                    {% elif 'фотокнига' in order.service.title.lower() or 'альбом' in order.service.title.lower() %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-bordered">
+                                    <tr class="table-secondary">
+                                        <th colspan="2">📚 Параметры фотокниги</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Материал обложки:</th>
+                                        <td>
+                                            {% if details.cover_material == 'leather' %}
+                                                🧵 Кожаный переплет (+30 BYN)
+                                            {% elif details.cover_material == 'hard' %}
+                                                📘 Твердый переплет
+                                            {% else %}
+                                                {{ details.cover_material|capitalize }}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Количество разворотов:</th>
+                                        <td><strong>{{ details.spreads_count }}</strong> (базовые 10 + {{ details.spreads_count - 10 }} доп.)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Тип дизайна:</th>
+                                        <td>{{ details.design_type|capitalize }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Фото на развороте:</th>
+                                        <td>{{ details.photos_per_spread }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Стиль верстки:</th>
+                                        <td>{{ details.layout_style|capitalize }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Желаемая дата:</th>
+                                        <td>{{ details.deadline_date or 'Не указана' }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6><i class="bi bi-chat-text"></i> Текст на страницах</h6>
+                                        <p class="small">{{ details.text_on_pages or '—' }}</p>
+                                        <hr>
+                                        <h6><i class="bi bi-images"></i> Загруженные фото</h6>
+                                        {% if details.uploaded_photos and details.uploaded_photos|length > 0 %}
+                                            <ul>
+                                            {% for file in details.uploaded_photos %}
+                                                <li><a href="{{ url_for('static', filename='uploads/' + file) }}" target="_blank">{{ file }}</a></li>
+                                            {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <p class="text-muted">Файлы не загружены</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    <!-- ========== ФОТОСУВЕНИРЫ (кружки и т.д.) ========== -->
+                    {% elif 'кружк' in order.service.title.lower() or 'сувенир' in order.service.title.lower() %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-bordered">
+                                    <tr class="table-secondary">
+                                        <th colspan="2">🎁 Параметры сувенира</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Тип изделия:</th>
+                                        <td>
+                                            {% if details.product_type == 'mug' %}☕ Кружка
+                                            {% elif details.product_type == 'tshirt' %}👕 Футболка
+                                            {% elif details.product_type == 'magnet' %}🧲 Магнит
+                                            {% elif details.product_type == 'puzzle' %}🧩 Пазл
+                                            {% else %}{{ details.product_type }}{% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Цвет:</th>
+                                        <td>{{ details.color|capitalize }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Текст надписи:</th>
+                                        <td><span class="badge bg-dark">{{ details.inscription_text or '—' }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Шрифт:</th>
+                                        <td>{{ details.inscription_font|capitalize }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Количество:</th>
+                                        <td><strong>{{ details.quantity }} шт.</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Желаемая дата:</th>
+                                        <td>{{ details.deadline_date or 'Не указана' }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="alert alert-light">
+                                    <h6><i class="bi bi-image"></i> Загруженное изображение</h6>
+                                    {% if details.upload_image %}
+                                        <img src="{{ url_for('static', filename='uploads/' + details.upload_image) }}" 
+                                             class="img-fluid rounded" style="max-height: 200px;">
+                                        <br>
+                                        <a href="{{ url_for('static', filename='uploads/' + details.upload_image) }}" target="_blank" class="btn btn-sm btn-link">
+                                            🔍 Открыть оригинал
+                                        </a>
+                                    {% else %}
+                                        <p class="text-muted">Изображение не загружено</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    
+                    <!-- ========== ФОТОСЕССИЯ ========== -->
+                    {% elif order.service.category == 'photo_session' %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table table-bordered">
+                                    <tr class="table-secondary">
+                                        <th colspan="2">📸 Параметры фотосессии</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Тип съемки:</th>
+                                        <td>{{ details.session_type|capitalize }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Продолжительность:</th>
+                                        <td>{{ details.hours }} час(ов)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Локация:</th>
+                                        <td>
+                                            {% if details.location == 'studio' %}🏠 В студии
+                                            {% elif details.location == 'outdoor' %}🌳 На улице
+                                            {% elif details.location == 'client' %}🏡 У клиента
+                                            {% else %}{{ details.location }}{% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Смена образов:</th>
+                                        <td>{{ details.outfit_changes }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Визажист/стилист:</th>
+                                        <td>{% if details.makeup_hair %}✅ Да (+50 BYN){% else %}❌ Нет{% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Предпочтительная дата:</th>
+                                        <td>{{ details.preferred_date or 'Не указана' }} {{ details.preferred_time or '' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Особые пожелания:</th>
+                                        <td>{{ details.special_wishes or '—' }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    
+                    <!-- ========== ДРУГИЕ УСЛУГИ ========== -->
+                    {% else %}
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>Особые требования:</th>
+                                        <td>{{ details.special_requirements or '—' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Желаемая дата выполнения:</th>
+                                        <td>{{ details.deadline_date or 'Не указана' }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Отображение всего JSON на случай, если что-то пропущено -->
+                    <div class="mt-3">
+                        <details>
+                            <summary class="text-muted small">📋 Показать все данные (JSON)</summary>
+                            <pre class="small bg-light p-2 mt-2" style="overflow-x: auto;">{{ order.details|tojson(indent=2) }}</pre>
+                        </details>
+                    </div>
+                    
+                {% else %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> 
+                        Детали заказа отсутствуют (устаревший заказ или не заполнены).
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-12">
+        <a href="{{ url_for('admin.orders') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Назад к списку заказов
+        </a>
     </div>
 </div>
 {% endblock %}

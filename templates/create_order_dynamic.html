@@ -1,0 +1,408 @@
+{% extends 'base.html' %}
+
+{% block title %}Оформление заказа: {{ service.title }}{% endblock %}
+
+{% block main %}
+<section class="py-5">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('price') }}">Услуги</a></li>
+                <li class="breadcrumb-item active">Оформление заказа</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card mb-4">
+    <img src="{{ url_for('static', filename=service.image_url) }}" 
+         alt="{{ service.title }}" 
+         class="card-img-top" 
+         style="max-height: 300px; object-fit: cover;">
+    <div class="card-body">
+        <h5 class="card-title">{{ service.title }}</h5>
+        <p class="card-text text-muted">{{ service.description|truncate(150) }}</p>
+        <div class="price-display">
+            <span class="h4">{{ service.price_from }}</span>
+            {% if service.price_period %}
+                <span class="text-muted">/ {{ service.price_period }}</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h4 class="card-title mb-0">
+                            <i class="bi bi-bag-check me-2"></i>{{ service.title }}
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" enctype="multipart/form-data">
+                            <!-- Скрытые поля для service_id -->
+                            <input type="hidden" name="service_id" value="{{ service.id }}">
+                            
+                            <!-- БЛОК В ЗАВИСИМОСТИ ОТ КАТЕГОРИИ -->
+                            
+                            {% if service.category == 'printing' %}
+                                {# ========== ПЕЧАТЬ ФОТОГРАФИЙ ========== #}
+                                <h5 class="mb-3">Параметры печати</h5>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Тип печати</label>
+                                    <select name="print_type" class="form-select" required>
+                                        <option value="standard">Стандартная (3-5 дней)</option>
+                                        <option value="urgent">Срочная (1 час) +50%</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Количество фотографий</label>
+                                    <input type="number" name="photos_count" class="form-control" min="1" value="1" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Размер</label>
+                                    <select name="sizes" class="form-select" required>
+                                        <option value="10x15">10×15 см</option>
+                                        <option value="15x20">15×20 см</option>
+                                        <option value="20x30">20×30 см</option>
+                                        <option value="A4">A4 (21×29.7 см)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Тип бумаги</label>
+                                    <select name="paper_type" class="form-select">
+                                        <option value="glossy">Глянцевая</option>
+                                        <option value="matte">Матовая</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" name="color_correction" class="form-check-input" id="color_correction">
+                                    <label class="form-check-label" for="color_correction">Цветокоррекция (бесплатно)</label>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Загрузите фотографии</label>
+                                    <input type="file" name="photos_upload" class="form-control" multiple accept="image/*">
+                                    <small class="text-muted">Можно выбрать несколько файлов</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Желаемая дата готовности</label>
+                                    <input type="date" name="deadline_date" class="form-control">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Комментарий к заказу</label>
+                                    <textarea name="comments" class="form-control" rows="3" placeholder="Дополнительные пожелания..."></textarea>
+                                </div>
+                                
+                            {% elif 'фотокнига' in service.title.lower() or 'альбом' in service.title.lower() %}
+                                {# ========== ФОТОКНИГИ И АЛЬБОМЫ ========== #}
+                                <h5 class="mb-3">Параметры фотокниги</h5>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Материал обложки</label>
+                                    <select name="cover_material" class="form-select" required>
+                                        <option value="hard">Твердый переплет (стандарт)</option>
+                                        <option value="leather">Кожаный переплет (+30 BYN)</option>
+                                        <option value="fabric">Тканевая обложка</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Количество разворотов</label>
+                                    <input type="number" name="spreads_count" class="form-control" min="10" value="10" required>
+                                    <small class="text-muted">Минимум 10 разворотов, каждый дополнительный +5 BYN</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Тип дизайна</label>
+                                    <select name="design_type" class="form-select">
+                                        <option value="classic">Классический</option>
+                                        <option value="modern">Современный</option>
+                                        <option value="kids">Детский</option>
+                                        <option value="wedding">Свадебный</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Фотографий на развороте</label>
+                                    <input type="number" name="photos_per_spread" class="form-control" min="1" max="10" value="3">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Стиль верстки</label>
+                                    <select name="layout_style" class="form-select">
+                                        <option value="collage">Коллаж</option>
+                                        <option value="fullpage">Полноэкранный</option>
+                                        <option value="minimal">Минимализм</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Текст на страницах (опционально)</label>
+                                    <textarea name="text_on_pages" class="form-control" rows="3" placeholder="Подписи к фото, поздравления..."></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Загрузите фотографии для книги</label>
+                                    <input type="file" name="book_photos" class="form-control" multiple accept="image/*">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Желаемая дата готовности</label>
+                                    <input type="date" name="deadline_date" class="form-control">
+                                </div>
+                                
+                            {% elif 'кружк' in service.title.lower() or 'сувенир' in service.title.lower() %}
+                                {# ========== ФОТОСУВЕНИРЫ ========== #}
+                                <h5 class="mb-3">Персонализация сувенира</h5>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Тип изделия</label>
+                                    <select name="product_type" class="form-select" required>
+                                        <option value="mug">Кружка</option>
+                                        <option value="tshirt">Футболка</option>
+                                        <option value="magnet">Магнит</option>
+                                        <option value="puzzle">Пазл</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Цвет изделия</label>
+                                    <select name="color" class="form-select">
+                                        <option value="white">Белый</option>
+                                        <option value="black">Черный</option>
+                                        <option value="red">Красный</option>
+                                        <option value="blue">Синий</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Текст надписи</label>
+                                    <input type="text" name="inscription_text" class="form-control" placeholder="С Днем Рождения!">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Шрифт надписи</label>
+                                    <select name="inscription_font" class="form-select">
+                                        <option value="standard">Стандартный</option>
+                                        <option value="cursive">Курсив</option>
+                                        <option value="bold">Жирный</option>
+                                        <option value="decorative">Декоративный</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Загрузите изображение для печати</label>
+                                    <input type="file" name="upload_image" class="form-control" accept="image/*">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Количество</label>
+                                    <input type="number" name="quantity" class="form-control" min="1" value="1" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Желаемая дата готовности</label>
+                                    <input type="date" name="deadline_date" class="form-control">
+                                </div>
+                                
+                            {% elif service.category == 'photo_session' %}
+                                {# ========== ФОТОСЕССИЯ ========== #}
+                                <h5 class="mb-3">Параметры фотосессии</h5>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Тип съемки</label>
+                                    <select name="session_type" class="form-select" required>
+                                        <option value="basic">Базовая студийная</option>
+                                        <option value="standard">Стандартная (смена образов)</option>
+                                        <option value="premium">Премиум (визажист + стилист)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Количество часов</label>
+                                    <input type="number" name="hours" class="form-control" min="1" value="1" step="0.5" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Локация</label>
+                                    <select name="location" class="form-select">
+                                        <option value="studio">В студии</option>
+                                        <option value="outdoor">На улице (парк/город)</option>
+                                        <option value="client">У клиента/выездная</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Количество смен образов</label>
+                                    <input type="number" name="outfit_changes" class="form-control" min="1" value="1">
+                                </div>
+                                
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" name="makeup_hair" class="form-check-input" id="makeup_hair">
+                                    <label class="form-check-label" for="makeup_hair">Визажист и стилист (+50 BYN)</label>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Предпочтительная дата</label>
+                                    <input type="date" name="preferred_date" class="form-control">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Предпочтительное время</label>
+                                    <input type="time" name="preferred_time" class="form-control">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Особые пожелания</label>
+                                    <textarea name="special_wishes" class="form-control" rows="3" placeholder="Идеи для съемки, нужен реквизит..."></textarea>
+                                </div>
+                                
+                            {% else %}
+                                {# ========== ДРУГИЕ УСЛУГИ ========== #}
+                                <div class="alert alert-info">
+                                    <p>Дополнительная информация для заказа:</p>
+                                    <textarea name="special_requirements" class="form-control" rows="4" placeholder="Опишите ваши пожелания..."></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Желаемая дата выполнения</label>
+                                    <input type="date" name="deadline_date" class="form-control">
+                                </div>
+                            {% endif %}
+                            
+                            <!-- Блок скидок и баллов (общий для всех) -->
+                            <hr class="my-4">
+                            
+                            <div class="mb-4 p-3 border rounded bg-light">
+                                <h6><i class="bi bi-percent me-2 text-success"></i>Ваша скидка</h6>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted">Ваш уровень:</small>
+                                        <div class="fw-bold">
+                                            {% if current_user.loyalty_level == 'gold' %}GOLD (15%){% elif current_user.loyalty_level == 'silver' %}SILVER (10%){% else %}REGULAR (5%){% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Скидка:</small>
+                                        <div class="h5 text-success">{{ discount_percent }}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {% if current_user.can_use_points() %}
+                            <div class="mb-4 p-3 border rounded">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="use_points" name="use_points">
+                                    <label class="form-check-label fw-bold" for="use_points">
+                                        Использовать баллы (у вас {{ current_user.loyalty_points }} баллов)
+                                    </label>
+                                    <small class="d-block text-muted mt-1">1 балл = 1 BYN. Можно оплатить до 50% стоимости.</small>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Итоговая стоимость -->
+                            <div class="mb-4 p-3 border rounded bg-success bg-opacity-10">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Стоимость услуги:</span>
+                                            <span id="price_display">{{ "%.2f"|format(original_price) }} BYN</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2 text-success">
+                                            <span>Скидка ({{ discount_percent }}%):</span>
+                                            <span>-{{ "%.2f"|format(discount_amount) }} BYN</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="text-center p-3 border rounded bg-white">
+                                            <small class="text-muted">ИТОГО К ОПЛАТЕ</small>
+                                            <div class="h3 text-success" id="final_price_display">
+                                                {{ "%.2f"|format(price_with_discount) }} BYN
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ url_for('price') }}" class="btn btn-outline-secondary">Назад к услугам</a>
+                                <button type="submit" class="btn btn-primary-custom">Подтвердить заказ</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Боковая панель -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        
+                       
+                        <h6>Как мы работаем:</h6>
+                        <ol class="small">
+                            <li>Вы заполняете форму заказа</li>
+                            <li>Мы связываемся с вами для уточнения деталей</li>
+                            <li>После согласования — оплата и выполнение</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Простой пересчёт итоговой цены при изменении полей (пример для фотокниги)
+document.addEventListener('DOMContentLoaded', function() {
+    const spreadsInput = document.querySelector('input[name="spreads_count"]');
+    const finalPriceSpan = document.getElementById('final_price_display');
+    const originalPriceSpan = document.getElementById('price_display');
+    const usePointsCheck = document.getElementById('use_points');
+    
+    function recalcPrice() {
+        let basePrice = {{ original_price }};
+        let discountPercent = {{ discount_percent }};
+        
+        // Если есть spreads_count (фотокнига)
+        if (spreadsInput) {
+            let spreads = parseInt(spreadsInput.value) || 10;
+            basePrice = 50 + Math.max(0, (spreads - 10)) * 5;
+            
+            // Доплата за кожаную обложку
+            const coverSelect = document.querySelector('select[name="cover_material"]');
+            if (coverSelect && coverSelect.value === 'leather') {
+                basePrice += 30;
+            }
+            
+            originalPriceSpan.textContent = basePrice.toFixed(2) + ' BYN';
+        }
+        
+        let afterDiscount = basePrice * (1 - discountPercent / 100);
+        let finalPrice = afterDiscount;
+        
+        if (usePointsCheck && usePointsCheck.checked) {
+            let maxPoints = afterDiscount * 0.5;
+            let userPoints = {{ current_user.loyalty_points }};
+            let pointsToUse = Math.min(userPoints, maxPoints);
+            finalPrice = Math.max(0, afterDiscount - pointsToUse);
+        }
+        
+        finalPriceSpan.textContent = finalPrice.toFixed(2) + ' BYN';
+    }
+    
+    if (spreadsInput) spreadsInput.addEventListener('change', recalcPrice);
+    if (usePointsCheck) usePointsCheck.addEventListener('change', recalcPrice);
+    
+    const coverSelect = document.querySelector('select[name="cover_material"]');
+    if (coverSelect) coverSelect.addEventListener('change', recalcPrice);
+});
+</script>
+{% endblock %}

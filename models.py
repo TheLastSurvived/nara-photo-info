@@ -128,6 +128,8 @@ class Order(db.Model):
     final_price = db.Column(db.Float, nullable=False)      # итоговая цена
     created_at = db.Column(db.DateTime, default=datetime.now)
     
+    # НОВОЕ ПОЛЕ: детали заказа в формате JSON
+    details = db.Column(db.JSON, default=dict)  # хранит все специфические параметры
     # Отношения
     user = db.relationship('User', backref=db.backref('orders', lazy=True))
     service = db.relationship('Service', backref=db.backref('orders', lazy=True))

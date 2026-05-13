@@ -14,6 +14,8 @@ from datetime import datetime, date
 import uuid
 from werkzeug.exceptions import HTTPException
 from admin import admin_bp
+from werkzeug.utils import secure_filename
+from flask import current_app
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -140,6 +142,9 @@ def price():
         search_query=search_query,
     )
 
+@app.route("/studio")
+def studio():
+    return render_template("studio.html")
 
 @app.route("/portfolio")
 def portfolio():
@@ -276,6 +281,213 @@ def profile():
     return render_template("profile.html", orders=orders)
 
 
+def save_order_files(files, order_id, subfolder='photos'):
+    """Сохраняет загруженные файлы и возвращает список имён файлов"""
+    saved_files = []
+    
+    # Создаём папку для заказа
+    order_folder = os.path.join(current_app.config['ORDER_UPLOAD_FOLDER'], str(order_id), subfolder)
+    os.makedirs(order_folder, exist_ok=True)
+    
+    for file in files:
+        if file and file.filename:
+            # Безопасное имя файла с уникальным ID
+            original_filename = secure_filename(file.filename)
+            name, ext = os.path.splitext(original_filename)
+            unique_filename = f"{uuid.uuid4().hex}{ext}"
+            
+            file_path = os.path.join(order_folder, unique_filename)
+            file.save(file_path)
+            
+            # Сохраняем относительный путь для базы данных
+            saved_files.append(f"orders/{order_id}/{subfolder}/{unique_filename}")
+    
+    return saved_files
+
+
+
+@app.route("/order/create/<int:service_id>", methods=["GET", "POST"])
+@login_required
+def create_order(service_id):
+    service = Service.query.get_or_404(service_id)
+    
+    # Проверяем существующий заказ
+    existing_order = Order.query.filter_by(
+        user_id=current_user.id, service_id=service_id, status="pending"
+    ).first()
+    if existing_order:
+        flash("Вы уже заказали эту услугу!", "info")
+        return redirect(url_for("profile"))
+    
+    # Получаем данные для расчёта цены
+    original_price = service.price_value if service.price_value else 0
+    discount_percent = current_user.get_discount_percent()
+    discount_amount = original_price * (discount_percent / 100)
+    price_with_discount = original_price - discount_amount
+    
+    if request.method == "POST":
+        use_points = request.form.get("use_points") == "on"
+        points_to_use = 0
+        
+        # Собираем детали заказа
+        details = {}
+        category = service.category
+        
+        # ВАЖНО: сначала создаём заказ в БД, чтобы получить order.id для папки
+        # Но пока без details, создадим временный заказ
+        
+        if category == "printing":
+            details = {
+                "print_type": request.form.get("print_type", "standard"),
+                "photos_count": int(request.form.get("photos_count", 1)),
+                "sizes": request.form.get("sizes"),
+                "paper_type": request.form.get("paper_type"),
+                "color_correction": request.form.get("color_correction") == "on",
+                "deadline_date": request.form.get("deadline_date"),
+                "comments": request.form.get("comments", ""),
+                "temp_files": []  # временно, заполним после сохранения
+            }
+            
+            # Расчёт цены для печати
+            base_per_photo = original_price
+            if details["print_type"] == "urgent":
+                original_price = base_per_photo * details["photos_count"] * 1.5
+            else:
+                original_price = base_per_photo * details["photos_count"]
+            
+            # Скидка за пакет
+            if details["photos_count"] >= 10:
+                original_price *= 0.9
+                
+            # Сохраняем файлы после создания заказа!
+            
+        elif category == "special_offers" and ("фотокнига" in service.title.lower() or "альбом" in service.title.lower()):
+            details = {
+                "cover_material": request.form.get("cover_material"),
+                "spreads_count": int(request.form.get("spreads_count", 10)),
+                "design_type": request.form.get("design_type"),
+                "photos_per_spread": int(request.form.get("photos_per_spread", 3)),
+                "layout_style": request.form.get("layout_style"),
+                "text_on_pages": request.form.get("text_on_pages", ""),
+                "deadline_date": request.form.get("deadline_date"),
+                "temp_files": []
+            }
+            
+            # Расчёт цены фотокниги
+            original_price = 50 + max(0, (details["spreads_count"] - 10)) * 5
+            if details["cover_material"] == "leather":
+                original_price += 30
+                
+        elif category == "special_offers" and ("кружк" in service.title.lower() or "сувенир" in service.title.lower()):
+            details = {
+                "product_type": request.form.get("product_type"),
+                "color": request.form.get("color"),
+                "inscription_text": request.form.get("inscription_text", ""),
+                "inscription_font": request.form.get("inscription_font"),
+                "quantity": int(request.form.get("quantity", 1)),
+                "deadline_date": request.form.get("deadline_date"),
+                "temp_image": None
+            }
+            original_price = service.price_value * details["quantity"]
+            
+        elif category == "photo_session":
+            details = {
+                "session_type": request.form.get("session_type"),
+                "hours": float(request.form.get("hours", 1)),
+                "location": request.form.get("location"),
+                "outfit_changes": int(request.form.get("outfit_changes", 1)),
+                "makeup_hair": request.form.get("makeup_hair") == "on",
+                "preferred_date": request.form.get("preferred_date"),
+                "preferred_time": request.form.get("preferred_time"),
+                "special_wishes": request.form.get("special_wishes", "")
+            }
+            original_price = service.price_value * details["hours"]
+            if details["makeup_hair"]:
+                original_price += 50
+        
+        # Пересчёт со скидкой
+        discount_amount = original_price * (discount_percent / 100)
+        
+        # Использование баллов
+        if use_points and current_user.can_use_points():
+            max_points_value = original_price * 0.5
+            points_to_use = min(current_user.loyalty_points, int(max_points_value))
+        
+        points_discount = points_to_use
+        final_price = max(0, original_price - discount_amount - points_discount)
+        
+        try:
+            # Сначала создаём заказ
+            order = Order(
+                service_id=service_id,
+                user_id=current_user.id,
+                original_price=original_price,
+                discount_percent=discount_percent,
+                points_used=points_to_use,
+                final_price=final_price,
+                details={},  # временно пустой
+                status="pending"
+            )
+            
+            db.session.add(order)
+            db.session.flush()  # Получаем order.id, но не коммитим
+            
+            # === СОХРАНЯЕМ ФАЙЛЫ ===
+            uploaded_files = []
+            
+            # Для печати фотографий
+            if category == "printing":
+                files = request.files.getlist("photos_upload")
+                if files and files[0].filename:
+                    uploaded_files = save_order_files(files, order.id, "photos")
+                    
+            # Для фотокниги
+            elif category == "special_offers" and ("фотокнига" in service.title.lower() or "альбом" in service.title.lower()):
+                files = request.files.getlist("book_photos")
+                if files and files[0].filename:
+                    uploaded_files = save_order_files(files, order.id, "book_photos")
+                    
+            # Для сувениров (одно изображение)
+            elif category == "special_offers" and ("кружк" in service.title.lower() or "сувенир" in service.title.lower()):
+                file = request.files.get("upload_image")
+                if file and file.filename:
+                    uploaded_files = save_order_files([file], order.id, "product_image")
+                    details["upload_image"] = uploaded_files[0] if uploaded_files else None
+            
+            # Обновляем детали с путями к файлам
+            if category == "printing":
+                details["file_urls"] = uploaded_files
+            elif "фотокнига" in service.title.lower() or "альбом" in service.title.lower():
+                details["uploaded_photos"] = uploaded_files
+            
+            order.details = details
+            
+            # Обновляем баллы
+            if points_to_use > 0:
+                current_user.loyalty_points -= points_to_use
+            
+            db.session.commit()
+            
+            # Сообщаем о количестве загруженных файлов
+            file_msg = f" (загружено {len(uploaded_files)} файлов)" if uploaded_files else ""
+            flash(f'Заказ #{order.id} успешно оформлен! Сумма: {final_price:.2f} BYN{file_msg}', "success")
+            return redirect(url_for("profile"))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Ошибка при создании заказа: {str(e)}", "error")
+    
+    # GET запрос
+    return render_template(
+        "create_order_dynamic.html",
+        service=service,
+        original_price=original_price,
+        discount_percent=discount_percent,
+        discount_amount=discount_amount,
+        price_with_discount=price_with_discount,
+    )
+
+''' 
 @app.route("/order/create/<int:service_id>", methods=["GET", "POST"])
 @login_required
 def create_order(service_id):
@@ -354,7 +566,7 @@ def create_order(service_id):
         discount_amount=discount_amount,
         price_with_discount=price_with_discount,
     )
-
+'''
 
 @app.route("/order/cancel/<int:order_id>")
 @login_required

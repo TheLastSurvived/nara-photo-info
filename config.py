@@ -11,3 +11,7 @@ class Config:
     
     FLASK_ADMIN_SWATCH = 'cerulean'
     DEBUG = True
+
+    ORDER_UPLOAD_FOLDER = 'static/uploads/orders'
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'zip'}
+    MAX_CONTENT_LENGTH = 50 * 1024 * 1024  # 50MB максимум

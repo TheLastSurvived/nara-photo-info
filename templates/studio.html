@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+
+{% block title %}Наша студия и фотографы{% endblock %}
+
+{% block main %}
+
+<!-- Шапка -->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h1 class="section-title d-inline-block">Наша студия и команда</h1>
+        <p class="lead">Профессиональные фотографы и уютные локации в Гродно для ваших идеальных снимков</p>
+    </div>
+</section>
+
+<!-- ========== ФОТОГРАФЫ ========== -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title d-inline-block">Наши фотографы</h2>
+            <p class="text-muted">Профессионалы с любовью к своему делу</p>
+        </div>
+        <div class="row g-4">
+            <!-- Фотограф 1 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 text-center shadow-sm">
+                    <img src="{{ url_for('static', filename='images/photographer1.jpg') }}" 
+                         class="card-img-top p-3 rounded-circle" 
+                         style="height: 200px; width: 200px; object-fit: cover; margin: 0 auto;"
+                         alt="Анна Смирнова">
+                    <div class="card-body">
+                        <h5 class="card-title">Анна Смирнова</h5>
+                        <p class="card-text small">Опыт 8 лет. Специализируется на женских портретах, семейных фотосессиях. Создаёт тёплую, располагающую атмосферу.</p>
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Фотограф 2 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 text-center shadow-sm">
+                    <img src="{{ url_for('static', filename='images/photographer2.jpg') }}" 
+                         class="card-img-top p-3 rounded-circle" 
+                         style="height: 200px; width: 200px; object-fit: cover; margin: 0 auto;"
+                         alt="Дмитрий Волков">
+                    <div class="card-body">
+                        <h5 class="card-title">Дмитрий Волков</h5>
+                        <p class="card-text small">Опыт 10+ лет. Специалист по свадебной фотографии и Love Story. Умеет подмечать искренние эмоции.</p>
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Фотограф 3 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 text-center shadow-sm">
+                    <img src="{{ url_for('static', filename='images/photographer3.jpg') }}" 
+                         class="card-img-top p-3 rounded-circle" 
+                         style="height: 200px; width: 200px; object-fit: cover; margin: 0 auto;"
+                         alt="Екатерина Мороз">
+                    <div class="card-body">
+                        <h5 class="card-title">Екатерина Мороз</h5>
+                        <p class="card-text small">Опыт 5 лет. Знает подход к детям, умеет снимать живые, естественные кадры без напряжения.</p>
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Фотограф 4 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 text-center shadow-sm">
+                    <img src="{{ url_for('static', filename='images/photographer4.jpg') }}" 
+                         class="card-img-top p-3 rounded-circle" 
+                         style="height: 200px; width: 200px; object-fit: cover; margin: 0 auto;"
+                         alt="Михаил Андреев">
+                    <div class="card-body">
+                        <h5 class="card-title">Михаил Андреев</h5>
+                        <p class="card-text small">Опыт 7 лет. Снимает товары, еду, интерьеры. Идеально для маркетплейсов и каталогов.</p>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== ЛОКАЦИИ В ГРОДНО ========== -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title d-inline-block">Локации для съёмок в Гродно</h2>
+            <p class="text-muted">Выберите идеальное место для вашей фотосессии</p>
+        </div>
+        <div class="row g-4">
+            <!-- Локация 1 - Фотостудия НАРА -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm overflow-hidden">
+                    <img src="{{ url_for('static', filename='images/studio1.jpg') }}" 
+                         class="card-img-top" style="height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5><i class="bi bi-building me-2"></i>Фотостудия "НАРА"</h5>
+                        <p class="small text-muted">📍 г. Гродно, ул. Горького, 84</p>
+                        <p>Современная студия с профессиональным световым оборудованием. Несколько интерьерных зон: минимализм, лофт, классический интерьер.</p>
+                        <ul class="list-unstyled small">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Фото- и видеооборудование</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>3 интерьерные зоны</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Гримёрная комната</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Локация 2 - Старый город -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm overflow-hidden">
+                    <img src="{{ url_for('static', filename='images/oldtown.jpg') }}" 
+                         class="card-img-top" style="height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5><i class="bi bi-tree me-2"></i>Старый город</h5>
+                        <p class="small text-muted">📍 Исторический центр Гродно</p>
+                        <p>Узкие мощеные улочки, старинная архитектура, Коложская церковь. Идеально для свадебных, ретро и художественных фотосессий.</p>
+                        <ul class="list-unstyled small">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Коложская церковь (фон)</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Старые дворики</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Брусчатка и фонари</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Локация 3 - Парк Жилибера -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm overflow-hidden">
+                    <img src="{{ url_for('static', filename='images/zhiliber.jpg') }}" 
+                         class="card-img-top" style="height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5><i class="bi bi-flower1 me-2"></i>Парк Жилибера</h5>
+                        <p class="small text-muted">📍 ул. Карла Маркса, Гродно</p>
+                        <p>Красивейший ландшафтный парк с фонтаном, ротондой, ухоженными аллеями и клумбами. Отличное место для семейных и романтических съёмок.</p>
+                        <ul class="list-unstyled small">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Фонтан и ротонда</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Аллеи и цветники</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Детские площадки</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Вход свободный</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Локация 4 - Набережная Немана -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm overflow-hidden">
+                    <img src="{{ url_for('static', filename='images/neman.jpg') }}" 
+                         class="card-img-top" style="height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5><i class="bi bi-water me-2"></i>Набережная Немана</h5>
+                        <p class="small text-muted">📍 Река Неман, Гродно</p>
+                        <p>Широкая набережная с видом на реку, лодочная станция, мост. Красивые закаты, волны, отражения — романтика и спокойствие.</p>
+                        <ul class="list-unstyled small">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Вид на реку и мост</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Лодочная станция</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Закатная съёмка</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>В любое время года</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Локация 5 - Лофт помещение (можно найти в Гродно) -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm overflow-hidden">
+                    <img src="{{ url_for('static', filename='images/loft.jpg') }}" 
+                         class="card-img-top" style="height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5><i class="bi bi-bricks me-2"></i>Лофт-студия "Бункер"</h5>
+                        <p class="small text-muted">📍 Кирпичный завод, Гродно</p>
+                        <p>Индустриальное пространство: кирпичные стены, высокие окна, винтажные детали. Для креативных и смелых фотосессий.</p>
+                        <ul class="list-unstyled small">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Кирпичная кладка</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Винтажный реквизит</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Неоновая подсветка</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Локация 6 - Выездная -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm overflow-hidden">
+                    <img src="{{ url_for('static', filename='images/exterior.jpg') }}" 
+                         class="card-img-top" style="height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5><i class="bi bi-geo-alt me-2"></i>Выездная съёмка</h5>
+                        <p class="small text-muted">🌍 Любая локация в Гродно и области</p>
+                        <p>Хотите сняться в необычном месте? Предложите свою локацию — мы приедем! Заброшенные здания, усадьбы, крыши, лес.</p>
+                        <ul class="list-unstyled small">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Выезд по Гродно + бесплатно</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Область + доплата за такси</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Согласование за 2 дня</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Цена от договорной</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Блок с оборудованием -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title d-inline-block">Техническое оснащение</h2>
+            <p class="text-muted">Профессиональная техника для идеального результата</p>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <i class="bi bi-camera display-1 text-primary"></i>
+                <h5 class="mt-3">Камеры</h5>
+                <p class="small text-muted">Canon EOS R5, Sony A7IV, Nikon Z9</p>
+            </div>
+            <div class="col-md-4">
+                <i class="bi bi-brightness-alt-high display-1 text-primary"></i>
+                <h5 class="mt-3">Свет</h5>
+                <p class="small text-muted">Godox, Profoto, студийный свет, софтбоксы</p>
+            </div>
+            <div class="col-md-4">
+                <i class="bi bi-printer display-1 text-primary"></i>
+                <h5 class="mt-3">Печать</h5>
+                <p class="small text-muted">Широкоформатная печать до А0, ламинация</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Кнопка записи -->
+<section class="py-5 bg-price text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Запишитесь на фотосессию в Гродно</h2>
+        <p class="lead mb-4">Выберите фотографа и локацию — мы поможем воплотить ваши идеи</p>
+        <a href="{{ url_for('index') }}#contact" class="btn btn-light btn-lg px-5">
+            📸 Записаться сейчас
+        </a>
+    </div>
+</section>
+
+{% endblock %}
