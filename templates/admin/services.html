@@ -41,21 +41,23 @@
                         </td>
                         <td>{{ service.title }}</td>
                         <td>
-                            {% if service.category == 'printing' %}
-                                <span class="badge bg-info">Печать</span>
-                            {% elif service.category == 'photo_session' %}
-                                <span class="badge bg-primary">Фотосессии</span>
-                            {% elif service.category == 'special_offers' %}
-                                <span class="badge bg-success">Акции</span>
-                            {% elif service.category== 'mug_printing' %}
-                                <span class="badge bg-warning">Печать на кружке</span>
-                                {% elif service.category== 'album' %}
-                                <span class="badge bg-danger">Фотокниги и альбомы</span>
-                                 {% elif service.category== 'retouch' %}
-                                <span class="badge bg-danger">Обработка и ретушь</span>
-                                 {% elif service.category== 'large_format' %}
-                                <span class="badge bg-danger">Увеличение и постеры</span>
-                            {% endif %}
+                          {% if service.category == 'printing' %}
+                            <span class="badge bg-primary">Печать фотографий</span>
+                        {% elif service.category == 'photo_session' %}
+                            <span class="badge bg-success">Фотосессии</span>
+                        {% elif service.category == 'special_offers' %}
+                            <span class="badge bg-danger">Акции</span>
+                        {% elif service.category == 'mug_printing' %}
+                            <span class="badge bg-warning text-dark">Печать на кружке</span>
+                        {% elif service.category == 'album' %}
+                            <span class="badge bg-info">Фотокниги и альбомы</span>
+                        {% elif service.category == 'retouch' %}
+                            <span class="badge bg-secondary">Обработка и ретушь</span>
+                        {% elif service.category == 'large_format' %}
+                            <span class="badge bg-dark">Увеличение и постеры</span>
+                        {% else %}
+                            <span class="badge bg-light text-dark">Услуга</span>
+                        {% endif %}
                         </td>
                         <td>{{ service.price_from }} {{ service.price_period }}</td>
                         <td>
