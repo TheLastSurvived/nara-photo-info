@@ -47,10 +47,14 @@
                                 <span class="badge bg-primary">Фотосессии</span>
                             {% elif service.category == 'special_offers' %}
                                 <span class="badge bg-success">Акции</span>
-                            {% elif service.category== 'souvenir' %}
-                                <span class="badge bg-warning">Сувениры</span>
+                            {% elif service.category== 'mug_printing' %}
+                                <span class="badge bg-warning">Печать на кружке</span>
                                 {% elif service.category== 'album' %}
                                 <span class="badge bg-danger">Фотокниги и альбомы</span>
+                                 {% elif service.category== 'retouch' %}
+                                <span class="badge bg-danger">Обработка и ретушь</span>
+                                 {% elif service.category== 'large_format' %}
+                                <span class="badge bg-danger">Увеличение и постеры</span>
                             {% endif %}
                         </td>
                         <td>{{ service.price_from }} {{ service.price_period }}</td>
