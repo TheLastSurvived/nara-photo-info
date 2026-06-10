@@ -282,25 +282,26 @@ def profile():
 
 
 def save_order_files(files, order_id, subfolder='photos'):
-    """Сохраняет загруженные файлы и возвращает список имён файлов"""
+    """Сохраняет файлы и возвращает список имен"""
     saved_files = []
     
-    # Создаём папку для заказа
-    order_folder = os.path.join(current_app.config['ORDER_UPLOAD_FOLDER'], str(order_id), subfolder)
-    os.makedirs(order_folder, exist_ok=True)
+    # Простой путь - создаем папку если нет
+    upload_folder = 'static/uploads'
+    if not os.path.exists(upload_folder):
+        os.makedirs(upload_folder)
     
     for file in files:
         if file and file.filename:
-            # Безопасное имя файла с уникальным ID
-            original_filename = secure_filename(file.filename)
-            name, ext = os.path.splitext(original_filename)
-            unique_filename = f"{uuid.uuid4().hex}{ext}"
-            
-            file_path = os.path.join(order_folder, unique_filename)
-            file.save(file_path)
-            
-            # Сохраняем относительный путь для базы данных
-            saved_files.append(f"orders/{order_id}/{subfolder}/{unique_filename}")
+            # Получаем расширение
+            ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else 'jpg'
+            # Уникальное имя
+            new_filename = f"{uuid.uuid4().hex}.{ext}"
+            # Полный путь
+            filepath = os.path.join(upload_folder, new_filename)
+            # Сохраняем
+            file.save(filepath)
+            # Для БД
+            saved_files.append(f"uploads/{new_filename}")
     
     return saved_files
 
@@ -319,7 +320,7 @@ def create_order(service_id):
         flash("Вы уже заказали эту услугу!", "info")
         return redirect(url_for("profile"))
     
-    # Получаем данные для расчёта цены
+    # Базовая цена
     original_price = service.price_value if service.price_value else 0
     discount_percent = current_user.get_discount_percent()
     discount_amount = original_price * (discount_percent / 100)
@@ -329,95 +330,123 @@ def create_order(service_id):
         use_points = request.form.get("use_points") == "on"
         points_to_use = 0
         
-        # Собираем детали заказа
+        # Детали заказа
         details = {}
-        category = service.category
         
-        # ВАЖНО: сначала создаём заказ в БД, чтобы получить order.id для папки
-        # Но пока без details, создадим временный заказ
+        # СОХРАНЯЕМ КАТЕГОРИЮ
+        details['category'] = service.category
+        details['service_title'] = service.title
         
-        if category == "printing":
-            details = {
-                "print_type": request.form.get("print_type", "standard"),
-                "photos_count": int(request.form.get("photos_count", 1)),
-                "sizes": request.form.get("sizes"),
-                "paper_type": request.form.get("paper_type"),
-                "color_correction": request.form.get("color_correction") == "on",
-                "deadline_date": request.form.get("deadline_date"),
-                "comments": request.form.get("comments", ""),
-                "temp_files": []  # временно, заполним после сохранения
-            }
-            
-            # Расчёт цены для печати
-            base_per_photo = original_price
-            if details["print_type"] == "urgent":
-                original_price = base_per_photo * details["photos_count"] * 1.5
-            else:
-                original_price = base_per_photo * details["photos_count"]
-            
-            # Скидка за пакет
-            if details["photos_count"] >= 10:
+        # ===== УНИВЕРСАЛЬНАЯ ОБРАБОТКА ВСЕХ ФАЙЛОВ =====
+        all_uploaded_files = []
+        
+        # Проходим по всем полям с файлами в форме
+        for field_name in request.files:
+            files = request.files.getlist(field_name)
+            for file in files:
+                if file and file.filename:
+                    # Сохраняем файл
+                    saved_files = save_order_files([file], 0, field_name)
+                    if saved_files:
+                        all_uploaded_files.extend(saved_files)
+                        
+                        # Для поля mug_image сохраняем отдельно как основное изображение
+                        if field_name == 'mug_image':
+                            details['upload_image'] = saved_files[0]
+        
+        # Сохраняем все файлы в details
+        if all_uploaded_files:
+            details['file_urls'] = all_uploaded_files
+        
+        # ===== ПАРАМЕТРЫ В ЗАВИСИМОСТИ ОТ КАТЕГОРИИ =====
+        
+        # Для печати фотографий
+        if service.category == 'printing':
+            details['photos_count'] = int(request.form.get('quantity', 1))
+            details['sizes'] = request.form.get('size', '10x15')
+            details['paper_type'] = request.form.get('paper_type', 'glossy')
+            details['color_correction'] = request.form.get('color_correction') == 'on'
+            # Пересчет цены
+            size_price = float(request.form.get('size_price', 2)) if request.form.get('size_price') else 2
+            original_price = size_price * details['photos_count']
+            if details['photos_count'] >= 10:
                 original_price *= 0.9
-                
-            # Сохраняем файлы после создания заказа!
-            
-        elif category == "special_offers" and ("фотокнига" in service.title.lower() or "альбом" in service.title.lower()):
-            details = {
-                "cover_material": request.form.get("cover_material"),
-                "spreads_count": int(request.form.get("spreads_count", 10)),
-                "design_type": request.form.get("design_type"),
-                "photos_per_spread": int(request.form.get("photos_per_spread", 3)),
-                "layout_style": request.form.get("layout_style"),
-                "text_on_pages": request.form.get("text_on_pages", ""),
-                "deadline_date": request.form.get("deadline_date"),
-                "temp_files": []
-            }
-            
-            # Расчёт цены фотокниги
-            original_price = 50 + max(0, (details["spreads_count"] - 10)) * 5
-            if details["cover_material"] == "leather":
-                original_price += 30
-                
-        elif category == "special_offers" and ("кружк" in service.title.lower() or "сувенир" in service.title.lower()):
-            details = {
-                "product_type": request.form.get("product_type"),
-                "color": request.form.get("color"),
-                "inscription_text": request.form.get("inscription_text", ""),
-                "inscription_font": request.form.get("inscription_font"),
-                "quantity": int(request.form.get("quantity", 1)),
-                "deadline_date": request.form.get("deadline_date"),
-                "temp_image": None
-            }
-            original_price = service.price_value * details["quantity"]
-            
-        elif category == "photo_session":
-            details = {
-                "session_type": request.form.get("session_type"),
-                "hours": float(request.form.get("hours", 1)),
-                "location": request.form.get("location"),
-                "outfit_changes": int(request.form.get("outfit_changes", 1)),
-                "makeup_hair": request.form.get("makeup_hair") == "on",
-                "preferred_date": request.form.get("preferred_date"),
-                "preferred_time": request.form.get("preferred_time"),
-                "special_wishes": request.form.get("special_wishes", "")
-            }
-            original_price = service.price_value * details["hours"]
-            if details["makeup_hair"]:
+        
+        # Для печати на кружке
+        elif service.category == 'mug_printing':
+            details['product_type'] = 'mug'
+            details['quantity'] = int(request.form.get('quantity', 1))
+            details['inscription_text'] = request.form.get('inscription_text', '')
+            details['mug_color'] = request.form.get('mug_color', 'white')
+            original_price = service.price_value * details['quantity']
+        
+        # Для фотосессии
+        elif service.category == 'photo_session':
+            details['hours'] = float(request.form.get('extra_hours', 0)) + 1
+            details['location'] = request.form.get('location', 'studio')
+            details['makeup_hair'] = request.form.get('makeup') == 'on'
+            original_price = service.price_value * details['hours']
+            if details['makeup_hair']:
                 original_price += 50
         
-        # Пересчёт со скидкой
+        # Для ретуши
+        elif service.category == 'retouch':
+            details['photos_count'] = int(request.form.get('photos_count', 1))
+            details['retouch_type'] = request.form.get('retouch_type', 'basic')
+            details['background_change'] = request.form.get('background_change') == 'on'
+            original_price = service.price_value * details['photos_count']
+            if details['retouch_type'] == 'deep':
+                original_price += 5 * details['photos_count']
+            elif details['retouch_type'] == 'art':
+                original_price += 10 * details['photos_count']
+            if details['background_change']:
+                original_price += 3 * details['photos_count']
+        
+        # Для фотокниг
+        elif service.category == 'album':
+            details['size'] = request.form.get('size', '20x20')
+            details['spreads'] = int(request.form.get('spreads', 10))
+            details['cover'] = request.form.get('cover', 'hard')
+            original_price = float(request.form.get('price_from', 80)) if request.form.get('price_from') else 80
+            original_price += max(0, (details['spreads'] - 10)) * 5
+            if details['cover'] == 'photo':
+                original_price += 15
+            elif details['cover'] == 'leather':
+                original_price += 30
+        
+        # Для постеров
+        elif service.category == 'large_format':
+            details['size'] = request.form.get('size', 'A2')
+            details['quantity'] = int(request.form.get('quantity', 1))
+            details['material'] = request.form.get('material', 'matte')
+            original_price = float(request.form.get('price_from', 25)) if request.form.get('price_from') else 25
+            original_price *= details['quantity']
+            if details['material'] == 'canvas':
+                original_price += 20 * details['quantity']
+            if details['quantity'] >= 2:
+                original_price *= 0.9
+        
+        # Комментарии (универсально)
+        comments = request.form.get('comments') or request.form.get('wishes') or request.form.get('requirements') or ''
+        if comments:
+            details['comments'] = comments
+        
+        # Желаемая дата
+        deadline = request.form.get('deadline_date') or request.form.get('preferred_date')
+        if deadline:
+            details['deadline_date'] = deadline
+        
+        # Пересчет скидки
         discount_amount = original_price * (discount_percent / 100)
         
-        # Использование баллов
+        # Баллы
         if use_points and current_user.can_use_points():
-            max_points_value = original_price * 0.5
-            points_to_use = min(current_user.loyalty_points, int(max_points_value))
+            max_points = original_price * 0.5
+            points_to_use = min(current_user.loyalty_points, int(max_points))
         
-        points_discount = points_to_use
-        final_price = max(0, original_price - discount_amount - points_discount)
+        final_price = max(0, original_price - discount_amount - points_to_use)
         
         try:
-            # Сначала создаём заказ
             order = Order(
                 service_id=service_id,
                 user_id=current_user.id,
@@ -425,59 +454,24 @@ def create_order(service_id):
                 discount_percent=discount_percent,
                 points_used=points_to_use,
                 final_price=final_price,
-                details={},  # временно пустой
+                details=details,
                 status="pending"
             )
             
             db.session.add(order)
-            db.session.flush()  # Получаем order.id, но не коммитим
             
-            # === СОХРАНЯЕМ ФАЙЛЫ ===
-            uploaded_files = []
-            
-            # Для печати фотографий
-            if category == "printing":
-                files = request.files.getlist("photos_upload")
-                if files and files[0].filename:
-                    uploaded_files = save_order_files(files, order.id, "photos")
-                    
-            # Для фотокниги
-            elif category == "special_offers" and ("фотокнига" in service.title.lower() or "альбом" in service.title.lower()):
-                files = request.files.getlist("book_photos")
-                if files and files[0].filename:
-                    uploaded_files = save_order_files(files, order.id, "book_photos")
-                    
-            # Для сувениров (одно изображение)
-            elif category == "special_offers" and ("кружк" in service.title.lower() or "сувенир" in service.title.lower()):
-                file = request.files.get("upload_image")
-                if file and file.filename:
-                    uploaded_files = save_order_files([file], order.id, "product_image")
-                    details["upload_image"] = uploaded_files[0] if uploaded_files else None
-            
-            # Обновляем детали с путями к файлам
-            if category == "printing":
-                details["file_urls"] = uploaded_files
-            elif "фотокнига" in service.title.lower() or "альбом" in service.title.lower():
-                details["uploaded_photos"] = uploaded_files
-            
-            order.details = details
-            
-            # Обновляем баллы
             if points_to_use > 0:
                 current_user.loyalty_points -= points_to_use
             
             db.session.commit()
             
-            # Сообщаем о количестве загруженных файлов
-            file_msg = f" (загружено {len(uploaded_files)} файлов)" if uploaded_files else ""
-            flash(f'Заказ #{order.id} успешно оформлен! Сумма: {final_price:.2f} BYN{file_msg}', "success")
+            flash(f'Заказ #{order.id} оформлен! Сумма: {final_price:.2f} BYN. Загружено файлов: {len(all_uploaded_files)}', 'success')
             return redirect(url_for("profile"))
             
         except Exception as e:
             db.session.rollback()
-            flash(f"Ошибка при создании заказа: {str(e)}", "error")
+            flash(f'Ошибка: {str(e)}', 'error')
     
-    # GET запрос
     return render_template(
         "create_order_dynamic.html",
         service=service,

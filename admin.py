@@ -193,7 +193,7 @@ def orders():
 @login_required
 @admin_required
 def order_detail(order_id):
-    order = Order.query.get_or_404(order_id)
+    order = Order.query.get(order_id)
     return render_template('admin/order_detail.html', order=order)
 
 @admin_bp.route('/orders/update/<int:order_id>', methods=['POST'])
